@@ -1,0 +1,10 @@
+/* 隐藏 Webkit 浏览器的滚动条 */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* 确保内容可以滚动 */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
