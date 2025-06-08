@@ -1,4 +1,3 @@
-
 import { readFile } from "fs";
 import path from "path";
 import express, {Express, Router} from "express";
@@ -21,12 +20,47 @@ const server = createServer(app);
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      "img-src": ["'self'", "https: data:"],
+      "img-src": ["'self'", "https: data:","https://*.cac1.pure.cloud"],
       "default-src": ["'self'"],
-      "connect-src": ["'self'", "http://localhost:5173", "http://localhost", "https://*.watson.appdomain.cloud", `${ANN_WRAPPER_DASHBOARD}`],
-      "frame-ancestors": ["'self'", "http://localhost:5173", "http://localhost", "https://*.watson.appdomain.cloud", `${ANN_WRAPPER_DASHBOARD}`],
-      "script-src": ["'self'", "'unsafe-eval'", "'unsafe-inline'", "http://localhost:5173", "http://localhost", "https://*.watson.appdomain.cloud", `${ANN_WRAPPER_DASHBOARD}`],
-      "style-src": ["'self'", "'unsafe-eval'", "'unsafe-inline'", "http://localhost:5173", "http://localhost", "https://*.watson.appdomain.cloud", `${ANN_WRAPPER_DASHBOARD}`],
+      "connect-src": [
+        "'self'",
+        "http://localhost:5173",
+        "http://localhost",
+        "https://*.watson.appdomain.cloud",
+        `${ANN_WRAPPER_DASHBOARD}`,
+        "http://localhost:*",
+        "ws://localhost:*",
+        "wss://localhost:*",
+        "https://*.nr-data.net",
+        "https://shyrka-prod-cac1.s3.ca-central-1.amazonaws.com",
+        "https://*.newrelic.com",
+        "https://*.cac1.pure.cloud",
+        "wss://*.cac1.pure.cloud"
+      ],
+      "frame-ancestors": ["*"],
+      "script-src": [
+        "'self'",
+        "'unsafe-eval'",
+        "'unsafe-inline'",
+        "http://localhost:5173",
+        "http://localhost",
+        "https://*.watson.appdomain.cloud",
+        `${ANN_WRAPPER_DASHBOARD}`,
+        "http://localhost:*",
+        "https://*.nr-data.net",
+        "https://*.newrelic.com",
+        "https://*.cac1.pure.cloud"
+      ],
+      "style-src": [
+        "'self'",
+        "'unsafe-eval'",
+        "'unsafe-inline'",
+        "http://localhost:5173",
+        "http://localhost",
+        "https://*.watson.appdomain.cloud",
+        `${ANN_WRAPPER_DASHBOARD}`,
+        "http://localhost:*"
+      ]
     }
   }
 }));
@@ -34,7 +68,6 @@ app.use(helmet({
 if (ENABLE_AUTH) {
   setupAuth(app);
 }
-
 
 app.use("/", express.static("./dist/client"));
 

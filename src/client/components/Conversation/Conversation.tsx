@@ -31,7 +31,7 @@ const Conversation = () => {
   }, [conversation]);
 
   return (
-    <div className="flex flex-col justify-start items-start shrink-0 rounded-xl bg-white mt-[33px] h-[778px]  self-stretch gap-2.5 border border-solid border-gray-100 ">
+    <div className="flex flex-col h-full justify-start items-start shrink-0 rounded-xl bg-white mt-[33px] h-[778px]  self-stretch gap-2.5 border border-solid border-gray-100 ">
         <Accordion>
           <AccordionItem 
             title="Conversation" 
@@ -41,7 +41,7 @@ const Conversation = () => {
           >
             <div 
               ref={scrollRef}
-              className="overflow-y-auto scrollbar-hide"
+              className="overflow-y-auto scrollbar-hide h-[778px]"
               style={{
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
