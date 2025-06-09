@@ -20,7 +20,7 @@ const server = createServer(app);
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      "img-src": ["'self'", "https: data:","https://*.cac1.pure.cloud"],
+      "img-src": ["'self'", "https: data:", "https://*.cac1.pure.cloud", "https://*.canadacentral-01.azurewebsites.net",],
       "default-src": ["'self'"],
       "connect-src": [
         "'self'",
@@ -35,7 +35,8 @@ app.use(helmet({
         "https://shyrka-prod-cac1.s3.ca-central-1.amazonaws.com",
         "https://*.newrelic.com",
         "https://*.cac1.pure.cloud",
-        "wss://*.cac1.pure.cloud"
+        "wss://*.cac1.pure.cloud",
+        "https://*.canadacentral-01.azurewebsites.net"
       ],
       "frame-ancestors": ["*"],
       "script-src": [
@@ -49,7 +50,9 @@ app.use(helmet({
         "http://localhost:*",
         "https://*.nr-data.net",
         "https://*.newrelic.com",
-        "https://*.cac1.pure.cloud"
+        "https://*.cac1.pure.cloud",
+        "https://rx-genesys-ui-fjc0crcvebaya0g3.canadacentral-01.azurewebsites.net",
+        "https://*.canadacentral-01.azurewebsites.net"
       ],
       "style-src": [
         "'self'",
@@ -59,7 +62,8 @@ app.use(helmet({
         "http://localhost",
         "https://*.watson.appdomain.cloud",
         `${ANN_WRAPPER_DASHBOARD}`,
-        "http://localhost:*"
+        "http://localhost:*",
+        "https://*.canadacentral-01.azurewebsites.net"
       ]
     }
   }
