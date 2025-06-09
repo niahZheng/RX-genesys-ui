@@ -20,7 +20,7 @@ const server = createServer(app);
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      "img-src": ["'self'", "https: data:", "https://*.cac1.pure.cloud", "https://*.canadacentral-01.azurewebsites.net",],
+      "img-src": ["'self'", "https: data:", "https://*.cac1.pure.cloud", "https://*.canadacentral-01.azurewebsites.net", "https://rx-genesys-ui-fjc0crcvebaya0g3.canadacentral-01.azurewebsites.net"],
       "default-src": ["'self'"],
       "connect-src": [
         "'self'",
@@ -36,7 +36,8 @@ app.use(helmet({
         "https://*.newrelic.com",
         "https://*.cac1.pure.cloud",
         "wss://*.cac1.pure.cloud",
-        "https://*.canadacentral-01.azurewebsites.net"
+        "https://*.canadacentral-01.azurewebsites.net",
+        "https://rx-genesys-ui-fjc0crcvebaya0g3.canadacentral-01.azurewebsites.net"
       ],
       "frame-ancestors": ["*"],
       "script-src": [
