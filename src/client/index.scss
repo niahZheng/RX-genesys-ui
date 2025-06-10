@@ -17,62 +17,6 @@ $prefix: 'cds';
   @include theme(themes.$g10);
 }
 
-.cds--accordion__content {
-    padding-inline-end: 0;
-  }
-
-.cds--accordion__item {
-  border-block-start:none
-}
-
-.cds--accordion__item:last-child {
-  border-block-end: none;
-}
-
-
-.cds--accordion__heading {
-  border-radius: 12px 12px 0 0;
-  height: 63px;
-  background: rgba(246, 246, 246, 1);
-}
-
-.cds--accordion__heading:hover {
-  background: rgba(246, 246, 246, 1);
-  outline: none;
-}
-
-.cds--accordion__heading:focus {
-  box-shadow: none
-}
-
-.cds--accordion__content {
-  padding-inline: 20px;
-}
-
-.cds--accordion__title {
-  display: flex;
-  padding: 16px 20px;
-  align-items: center;
-  gap: 10px;
-  lign-self: stretch;
-
-  flex: 1 0 0;
-  color: var(--Labels-Primary, var(--Labels-Primary, #000));
-
-  /* H6/Bold */
-  font-family: var(--Typography-Font-Family-font-family, "Loew Riyadh Air");
-  font-size: var(--Typography-Font-Size-H6, 19.2px);
-  font-style: normal;
-  font-weight: 700;
-  line-height: 160%; /* 30.72px */
-  opacity: 0.9;
-}
-
-.cds--btn--primary{
-  border-radius: 12px;
-}
-
-  
 
 
 

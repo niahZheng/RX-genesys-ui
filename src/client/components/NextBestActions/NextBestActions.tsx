@@ -92,35 +92,50 @@ const NextBestActions = () => {
   }, [actions]);
 
   return (
-    // <div className={widgetStyles.dashboardWidget}>
-    <div className=" flex flex-col items-start shrink-0 rounded-xl bg-white mt-[33px] self-stretch border border-solid border-gray-100">
+    <div className={`flex flex-col items-start shrink-0 rounded-xl bg-white mt-[33px] self-stretch border border-solid border-gray-100 ${expandedSection === 'nextBestAction' ? 'h-[690px]' : 'h-[63px]'}`}>
       <div className={styles.actionTileContainer}></div>
-      <Accordion>
-        <AccordionItem 
-          title="Quick Action" 
-          open={expandedSection === 'nextBestAction'}
+      <div className="w-full rounded-xl overflow-hidden">
+        <div 
+          className="flex items-center justify-between px-4 py-3 cursor-pointer border-b border-gray-100 h-[63px] bg-[#F6F6F6]"
           onClick={(e) => {
-            if (e.target instanceof HTMLElement && e.target.closest('.cds--accordion__title')) {
-              setExpandedSection('nextBestAction')
+            const target = e.target as HTMLElement;
+            const arrow = target.closest('.accordion-arrow');
+            if (arrow) {
+              setExpandedSection(expandedSection === 'nextBestAction' ? 'callSummary' : 'nextBestAction');
             }
           }}
         >
+          <h3 className="text-base font-medium">Quick Action</h3>
           <div 
-            ref={scrollRef}
-            className="overflow-y-auto max-h-[690px] scrollbar-hide"
-            style={{
-              scrollbarWidth: 'none',  /* Firefox */
-              msOverflowStyle: 'none',  /* IE and Edge */
-              overflow: 'auto',
-              WebkitOverflowScrolling: 'touch'
-            }}
+            className={`accordion-arrow transform transition-transform duration-200 ${expandedSection === 'nextBestAction' ? 'rotate-180' : ''}`}
           >
-            {actions.length ? actions.map((action, id) =>
-                <BestAction key={id} action={action} updateAction={updateAction} sendManualCompletion={sendManualCompletion}></BestAction>) :
-              <InlineLoading description={t("loadingAction")}/>}
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 11L3 6H13L8 11Z" fill="currentColor"/>
+            </svg>
           </div>
-        </AccordionItem>
-      </Accordion>
+        </div>
+        {expandedSection === 'nextBestAction' && (
+          <>
+            {actions.length > 0 && (
+              <div 
+                ref={scrollRef}
+                className="overflow-y-auto max-h-[627px] scrollbar-hide"
+                style={{
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                  overflow: 'auto',
+                  WebkitOverflowScrolling: 'touch'
+                }}
+              >
+                {actions.map((action, id) =>
+                  <BestAction key={id} action={action} updateAction={updateAction} sendManualCompletion={sendManualCompletion}></BestAction>
+                )}
+              </div>
+            )}
+            {actions.length === 0 && <InlineLoading description={t("loadingAction")}/>}
+          </>
+        )}
+      </div>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import * as widgetStyles from "@client/widget.module.scss";
 import { useTranslation } from "react-i18next";
 import {SocketPayload, useSocketEvent} from "@client/providers/Socket";
 import Message from "@client/components/Conversation/Message/Message";
-import { Accordion, AccordionItem, InlineLoading } from "@carbon/react";
+import { InlineLoading } from "@carbon/react";
 import * as styles from "./Conversation.module.scss";
 
 const Conversation = () => {
@@ -31,28 +31,42 @@ const Conversation = () => {
   }, [conversation]);
 
   return (
-    <div className="flex flex-col h-full justify-start items-start shrink-0 rounded-xl bg-white mt-[33px] h-[778px]  self-stretch gap-2.5 border border-solid border-gray-100 ">
-        <Accordion>
-          <AccordionItem 
-            title="Conversation" 
-            open={isOpen}
-            onClick={() => setIsOpen(!isOpen)}
-            // className={isOpen ? styles.accordionOpen : styles.accordionTitle}
+    <div className={`flex flex-col justify-start items-start shrink-0 rounded-xl bg-white mt-[33px] self-stretch gap-2.5 border border-solid border-gray-100 ${isOpen ? 'h-[778px]' : 'h-[63px]'}`}>
+      <div className="w-full rounded-xl overflow-hidden">
+        <div 
+          className="flex items-center justify-between px-4 py-3 cursor-pointer border-b border-gray-100 h-[63px] bg-[#F6F6F6]"
+          onClick={(e) => {
+            const target = e.target as HTMLElement;
+            const arrow = target.closest('.accordion-arrow');
+            if (arrow) {
+              setIsOpen(!isOpen);
+            }
+          }}
+        >
+          <h3 className="text-base font-medium">Conversation</h3>
+          <div 
+            className={`accordion-arrow transform transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
           >
-            <div 
-              ref={scrollRef}
-              className="overflow-y-auto scrollbar-hide h-[778px]"
-              style={{
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none',
-              }}
-            >
-              {conversation.map((message, index) => (
-                <Message key={`${message.session_id}-${index}`} data={message}/>
-              ))}
-            </div>
-          </AccordionItem>
-        </Accordion>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 11L3 6H13L8 11Z" fill="currentColor"/>
+            </svg>
+          </div>
+        </div>
+        {isOpen && (
+          <div 
+            ref={scrollRef}
+            className="overflow-y-auto scrollbar-hide h-[715px]"
+            style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            }}
+          >
+            {conversation.map((message, index) => (
+              <Message key={`${message.session_id}-${index}`} data={message}/>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
