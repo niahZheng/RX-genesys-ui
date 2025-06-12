@@ -1,5 +1,3 @@
-
-import {Column, Grid} from "@carbon/react";
 import NextBestActions from "@client/components/NextBestActions/NextBestActions";
 import CallSummary from "@client/components/CallSummary/CallSummary";
 
@@ -9,30 +7,19 @@ import { AccordionProvider } from "@client/context/AccordionContext";
 
 const Dashboard = () => {
   return (
-    
-    <Grid className="bg-white">
-      <Column sm={4} md={4}>
-        <Conversation/>
-      </Column>
-      <Column sm={4} md={4}>
-      <AccordionProvider>
-        <NextBestActions/>
-        <CallSummary/>
-      </AccordionProvider>
-      </Column>
-    </Grid>
-    // <div>
-    //   <div>
-    //   <Conversation/>
-    //   </div>
-    //   <div>
-    //     <AccordionProvider>
-    //       <NextBestActions/>
-    //       <CallSummary/>
-    //     </AccordionProvider>
-    //   </div>
-    // </div>
-
+    <div className="w-[601px] h-[882px] bg-white">
+      <div className="flex h-full gap-[19px] px-[14px]">
+        <div className="w-[300px]">
+          <Conversation/>
+        </div>
+        <div className="w-[254px]">
+          <AccordionProvider>
+            <NextBestActions/>
+            <CallSummary/>
+          </AccordionProvider>
+        </div>
+      </div>
+    </div>
   );
 };
 

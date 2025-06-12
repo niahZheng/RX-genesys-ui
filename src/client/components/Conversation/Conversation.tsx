@@ -43,19 +43,20 @@ const Conversation = () => {
             }
           }}
         >
-          <h3 className="text-base font-medium">Conversation</h3>
+          {/* <h3 className="self-stretch opacity-90 justify-center text-Labels-Primary text-xl font-bold font-['Loew_Riyadh_Air'] leading-loose">Conversation</h3> */}
+          <div className="self-stretch opacity-90 justify-center text-Labels-Primary text-xl font-bold  leading-loose">Conversation</div>
           <div 
             className={`accordion-arrow transform transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 11L3 6H13L8 11Z" fill="currentColor"/>
+            <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4.94 5.72668L8 8.78002L11.06 5.72668L12 6.66668L8 10.6667L4 6.66668L4.94 5.72668Z" fill="#000000"/>
             </svg>
           </div>
         </div>
         {isOpen && (
-          <div 
+          <div
             ref={scrollRef}
-            className="overflow-y-auto scrollbar-hide h-[715px]"
+            className="overflow-y-auto scrollbar-hide h-[715px] self-stretch px-5 py-7 inline-flex flex-col justify-start items-start gap-2.5"
             style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
