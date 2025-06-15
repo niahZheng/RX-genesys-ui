@@ -7,7 +7,7 @@ import BestAction from "./BestAction";
 import * as _ from "lodash";
 import {Accordion, AccordionItem, InlineLoading} from "@carbon/react";
 import { useAccordion } from "@client/context/AccordionContext";
-import {testapifunction} from "@client/providers/RestApi";
+import { initChatConnectorSession } from "@client/providers/RestApi";
 
 export enum ActionState {
   active = "active",
@@ -33,8 +33,7 @@ const NextBestActions = () => {
   const { expandedSection, setExpandedSection } = useAccordion();
 
   useEffect(() => {
-    console.log("hello world")
-    testapifunction();
+    initChatConnectorSession();
   }, []);
 
   useEffect(() => {
