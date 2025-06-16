@@ -11,21 +11,39 @@ const chatConnectorServer = axios.create({
 });
 
 interface chatConnectorResponse {
+  error?: string,
   status: string,
   message: string,
-  conversationId: string,
+  conversationId?: string,
 }
 
+const fakeIdList = [
+  "c03dc580-1de3-4df8-9d73-5ee25472621d",
+  "b626d4b9-20f7-4ebf-bcea-b8cf3b1b336c",
+  "7175d26a-c14f-4d49-989e-aee5748e9274",
+]
+
 export const initChatConnectorSession = async () => {
+  const index = Math.floor(Math.random() * fakeIdList.length);
   const data = {
-    "conversationId": conversationid || "645dbba6-2baf-4712-bb4c-5e07e1fbc82c",
+    "conversationId": conversationid || fakeIdList[index],
   }
   try {
     const response = await chatConnectorServer.post<chatConnectorResponse>("subscribe-conversation", data);
-    console.log('chatConnectorServer..............'+new Date().toUTCString(), response.data);
+    console.log('chatConnectorServer..............' + new Date().toUTCString(), response.data);
     return response.data;
+    // return { 
+    //   error: "error.message",
+    //   status: "error",
+    //   message: "Internal server error",
+    // }
   } catch (error: any) {
-    // throw new Error(error.response?.data?.message || 'some unknown error');
-    console.error('chatConnectorServer..............'+new Date().toUTCString(), error.response?.data?.message || 'some unknown error');
+    const err_msg = error.response?.data?.message || 'some unknown error';
+    console.error('chatConnectorServer..............' + new Date().toUTCString(), err_msg);
+    return {
+      error: err_msg,
+      status: "error",
+      message: "client side error",
+    }
   }
 };
