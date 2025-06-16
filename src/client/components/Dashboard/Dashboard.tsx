@@ -16,7 +16,7 @@ const Dashboard = () => {
     initChatConnectorSession().then((result) => {
       if (result?.status === "error") {
         setErrorMessage(result.message + ": " + result.error);
-        setOpen(true);
+        //setOpen(true);
       }
     })
   }, []);
@@ -28,7 +28,7 @@ const Dashboard = () => {
     initChatConnectorSession().then((result) => {
       if (result?.status === "error") {
         setErrorMessage(result.message + ": " + result.error);
-        setOpen(true);
+        //setOpen(true);
       }
     })
   }
