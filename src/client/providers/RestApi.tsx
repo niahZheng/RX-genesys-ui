@@ -38,12 +38,13 @@ export const initChatConnectorSession = async () => {
     //   message: "Internal server error",
     // }
   } catch (error: any) {
-    const err_msg = error.response?.data?.message || 'some unknown error';
-    console.error('chatConnectorServer..............' + new Date().toUTCString(), err_msg);
+    const got_msg = error.response?.data?.message || 'some unknown message';
+    const got_err = error.response?.data?.error   || 'some unknown error';
+    console.error('chatConnectorServer..............' + new Date().toUTCString(), got_msg);
     return {
-      error: err_msg,
+      error: got_err,
       status: "error",
-      message: "client side error",
+      message: got_msg,
     }
   }
 };
