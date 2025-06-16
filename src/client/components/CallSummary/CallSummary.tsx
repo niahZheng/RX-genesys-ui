@@ -25,38 +25,73 @@ const CallSummary = () => {
 
   return (
     // <div className={widgetStyles.dashboardWidget}>
-    <div className={`flex flex-col items-start shrink-0 rounded-xl bg-white mt-[20px] self-stretch gap-2.5 border border-solid border-gray-100 ${expandedSection === 'callSummary' ? 'h-[690px]' : 'h-[63px]'}`}>
+    <div
+      className={`flex flex-col items-start shrink-0 rounded-xl bg-white mt-[20px] self-stretch gap-2.5 border border-solid border-gray-100 ${
+        expandedSection === "callSummary" ? "h-[690px]" : "h-[63px]"
+      }`}
+    >
       <div className="w-full rounded-xl overflow-hidden">
-        <div 
+        <div
           className="flex items-center justify-between px-4 py-3 cursor-pointer border-b border-gray-100 h-[63px] bg-[#F6F6F6]"
           onClick={(e) => {
             const target = e.target as HTMLElement;
-            const arrow = target.closest('.accordion-arrow');
+            const arrow = target.closest(".accordion-arrow");
             if (arrow) {
-              setExpandedSection(expandedSection === 'callSummary' ? 'nextBestAction' : 'callSummary');
+              setExpandedSection(
+                expandedSection === "callSummary"
+                  ? "nextBestAction"
+                  : "callSummary"
+              );
             }
           }}
         >
           {/* <h3 className="text-base font-medium">Call Summary</h3> */}
-          <div className="self-stretch opacity-90 justify-center text-Labels-Primary text-xl font-bold  leading-loose">Call Summary</div>
-          <div 
-            className={`accordion-arrow transform transition-transform duration-200 ${expandedSection === 'callSummary' ? 'rotate-180' : ''}`}
+          <div className="self-stretch opacity-90 justify-center text-Labels-Primary text-xl font-bold  leading-loose">
+            Summary
+          </div>
+          <div
+            className={`accordion-arrow transform transition-transform duration-200 ${
+              expandedSection === "callSummary" ? "rotate-180" : ""
+            }`}
           >
-            <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4.94 5.72668L8 8.78002L11.06 5.72668L12 6.66668L8 10.6667L4 6.66668L4.94 5.72668Z" fill="#000000"/>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4.94 5.72668L8 8.78002L11.06 5.72668L12 6.66668L8 10.6667L4 6.66668L4.94 5.72668Z"
+                fill="#000000"
+              />
             </svg>
           </div>
         </div>
-        {expandedSection === 'callSummary' && (
+        {expandedSection === "callSummary" && (
           <>
-            <div className={styles.summaryText}>
-              <pre>
-                {summary ? summary : <InlineLoading description={t("loadingSummary")}/>}
-              </pre>
+            <div className="self-stretch p-5 inline-flex flex-col justify-start items-start gap-2.5 overflow-hidden">
+              <div className="self-stretch flex flex-col justify-start items-start gap-0.5">
+                <div className="flex flex-col justify-start items-start">
+                  <div className="w-52 p-[5px] inline-flex justify-center items-center">
+                    <div className="flex-1 opacity-90 justify-center text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug">
+                      {summary ? (summary) : (<InlineLoading description={t("loadingSummary")} />)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* <pre>
+                {summary ? (
+                  summary
+                ) : (
+                  <InlineLoading description={t("loadingSummary")} />
+                )}
+              </pre> */}
             </div>
-            <div className="px-4 py-2 text-sm text-gray-600">
-                conversation Id: {conversationid}
-            </div>
+            {/* <div className="px-4 py-2 text-sm text-gray-600">
+              conversation Id: {conversationid}
+            </div> */}
           </>
         )}
       </div>

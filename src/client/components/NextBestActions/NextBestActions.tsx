@@ -99,7 +99,7 @@ const NextBestActions = () => {
   return (
     <div className={`flex flex-col items-start shrink-0 rounded-xl bg-white mt-[33px] self-stretch border border-solid border-gray-100 ${expandedSection === 'nextBestAction' ? 'h-[690px]' : 'h-[63px]'}`}>
       <div className={styles.actionTileContainer}></div>
-      <div className="w-full rounded-xl overflow-hidden">
+      <div className="w-full rounded-xl overflow-hidden flex flex-col h-full">
         <div 
           className="flex items-center justify-between px-4 py-3 cursor-pointer border-b border-gray-100 h-[63px] bg-[#F6F6F6]"
           onClick={(e) => {
@@ -111,7 +111,7 @@ const NextBestActions = () => {
           }}
         >
           {/* <h3 className="text-base font-medium">Quick Action</h3> */}
-          <div className="self-stretch opacity-90 justify-center text-Labels-Primary text-xl font-bold  leading-loose">Quick Action</div>
+          <div className="self-stretch opacity-90 justify-center text-Labels-Primary text-xl font-bold  leading-loose">Quick Actions</div>
           <div 
             className={`accordion-arrow transform transition-transform duration-200 ${expandedSection === 'nextBestAction' ? 'rotate-180' : ''}`}
           >
@@ -122,23 +122,30 @@ const NextBestActions = () => {
         </div>
         {expandedSection === 'nextBestAction' && (
           <>
-            {actions.length > 0 && (
-              <div 
-                ref={scrollRef}
-                className="overflow-y-auto max-h-[627px] scrollbar-hide"
-                style={{
-                  scrollbarWidth: 'none',
-                  msOverflowStyle: 'none',
-                  overflow: 'auto',
-                  WebkitOverflowScrolling: 'touch'
-                }}
-              >
-                {actions.map((action, id) =>
-                  <BestAction key={id} action={action} updateAction={updateAction} sendManualCompletion={sendManualCompletion}></BestAction>
-                )}
-              </div>
-            )}
-            {actions.length === 0 && <InlineLoading description={t("loadingAction")}/>}
+            <div className="flex-1 overflow-hidden">
+              {actions.length > 0 && (
+                <div 
+                  ref={scrollRef}
+                  className="overflow-y-auto scrollbar-hide"
+                  style={{
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                    overflow: 'auto',
+                    WebkitOverflowScrolling: 'touch'
+                  }}
+                >
+                  {actions.map((action, id) =>
+                    <BestAction key={id} action={action} updateAction={updateAction} sendManualCompletion={sendManualCompletion}></BestAction>
+                  )}
+                </div>
+              )}
+              {actions.length === 0 && <InlineLoading description={t("loadingAction")}/>}
+            </div>
+            <div className="flex justify-center items-center w-full py-4 border-t border-gray-100 bg-white">
+              <button className="w-[214px] px-6 py-2 rounded-3xl justify-center items-center gap-4 border bg-white text-xs hover:bg-gray-50 transition-colors">
+                Generate Summary
+              </button>
+            </div>
           </>
         )}
       </div>

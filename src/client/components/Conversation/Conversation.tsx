@@ -63,7 +63,11 @@ const Conversation = () => {
             }}
           >
             {conversation.map((message, index) => (
-              <Message key={`${message.session_id}-${index}`} data={message}/>
+              <Message 
+                key={`${message.session_id}-${index}`} 
+                data={message}
+                prevMessage={index > 0 ? conversation[index - 1] : undefined}
+              />
             ))}
           </div>
         )}

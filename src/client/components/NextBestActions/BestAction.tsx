@@ -92,10 +92,9 @@ const BestAction = ({
     //     </ClickableTile>
     //   </Tooltip>
     // </div>
-    <div>
+    <div className="flex flex-col justify-start items-center gap-2.5 overflow-hidden">
       <div
-        data-status="active"
-        className="w-[214px] self-stretch min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2 border-[#767692]"
+        className="w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2 border-[#767692]"
       >
         <div className="self-stretch inline-flex justify-start items-start gap-1">
           <div className="flex-1 flex justify-center items-center gap-2.5">
@@ -128,7 +127,6 @@ const BestAction = ({
       </div>
       <div>
         <div
-          data-status="active"
           className="w-[214px] self-stretch min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2"
         >
           <div className="self-stretch inline-flex justify-start items-start gap-1">
@@ -164,7 +162,7 @@ const BestAction = ({
         </div>
       </div>
       <div>
-        <div className="self-stretch min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-emerald-300 inline-flex flex-col justify-start items-end gap-2">
+        <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-emerald-300 inline-flex flex-col justify-start items-end gap-2">
           <div className="self-stretch inline-flex justify-start items-start gap-1">
             <div className="flex-1 flex justify-center items-center gap-2.5">
               <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
@@ -177,7 +175,7 @@ const BestAction = ({
         </div>
       </div>
       <div>
-        <div className="self-stretch min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-red-300 inline-flex flex-col justify-start items-end gap-2">
+        <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-red-300 inline-flex flex-col justify-start items-end gap-2">
           <div className="self-stretch inline-flex justify-start items-start gap-1">
             <div className="flex-1 flex justify-center items-center gap-2.5">
               <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
