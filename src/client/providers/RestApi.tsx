@@ -5,8 +5,8 @@ const conversationid: any = queryParams.get('conversationid');
 
 
 const chatConnectorServer = axios.create({
-  // baseURL: 'https://chat-connector-dgabgde4fwdcd3cu.canadacentral-01.azurewebsites.net/',
-  baseURL: 'http://localhost:3333/',
+  baseURL: 'https://chat-connector-dgabgde4fwdcd3cu.canadacentral-01.azurewebsites.net/',
+  // baseURL: 'http://localhost:3333/',
   headers: { 'Content-Type': 'application/json' }
 });
 
@@ -25,6 +25,7 @@ export const initChatConnectorSession = async () => {
     console.log('chatConnectorServer..............'+new Date().toUTCString(), response.data);
     return response.data;
   } catch (error: any) {
-    throw new Error(error.response?.data?.message || 'some unknown error');
+    // throw new Error(error.response?.data?.message || 'some unknown error');
+    console.error('chatConnectorServer..............'+new Date().toUTCString(), error.response?.data?.message || 'some unknown error');
   }
 };
