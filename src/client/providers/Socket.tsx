@@ -17,9 +17,9 @@ export const useSocket = () => {
   let {socket, setSocket} = useContext(SocketContext);
 
   if (socket === undefined) {
-    const {socket} = useSocketParent();
+    const {socket} = useSocketParent('/celery');  // Connect to celery namespace
     socket.on('connect', () => {
-      console.log("11111111111111", conversationid);
+      console.log("Connected to celery namespace with conversation ID:", conversationid);
       socket.emit("joinRoom", conversationid)
     });
     setSocket(socket);
