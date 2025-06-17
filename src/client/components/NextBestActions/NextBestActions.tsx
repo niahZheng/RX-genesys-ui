@@ -117,7 +117,11 @@ const NextBestActions = () => {
         </div>
         {expandedSection === 'nextBestAction' && (
           <>
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide" style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              WebkitOverflowScrolling: 'touch'
+            }}>
               {actions.length > 0 && (
                 <div 
                   ref={scrollRef}
@@ -137,7 +141,10 @@ const NextBestActions = () => {
               {actions.length === 0 && <InlineLoading description={t("loadingAction")}/>}
             </div>
             <div className="flex justify-center items-center w-full py-4 border-t border-gray-100 bg-white">
-              <button className="w-[214px] px-6 py-2 rounded-3xl justify-center items-center gap-4 border bg-white text-xs hover:bg-gray-50 transition-colors">
+              <button 
+                className="w-[214px] px-6 py-2 rounded-3xl justify-center items-center gap-4 border bg-white text-xs hover:bg-gray-50 transition-colors"
+                onClick={() => setExpandedSection('callSummary')}
+              >
                 Generate Summary
               </button>
             </div>

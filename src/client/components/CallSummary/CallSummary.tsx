@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import {SocketPayload, useSocketEvent} from "@client/providers/Socket";
 import { InlineLoading} from "@carbon/react";
 import { useAccordion } from "@client/context/AccordionContext";
+import { Copy } from "@carbon/icons-react";
 
 const CallSummary = () => {
   const [summary, setSummary] = useState<string>("");
@@ -12,6 +13,16 @@ const CallSummary = () => {
   const {lastMessage} = useSocketEvent('celeryMessage');
   const { expandedSection, setExpandedSection } = useAccordion();
   const conversationid = new URLSearchParams(window.location.search).get('conversationid') || 'undefined';
+
+  const handleCopy = () => {
+    // const textToCopy = `Start: ${startTime}\nEnd: ${endTime}\nDuration: ${duration}\n\n${summary}`;
+    const textToCopy = `${summary}`;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      console.log('Text copied to clipboard');
+    }).catch(err => {
+      console.error('Failed to copy text: ', err);
+    });
+  };
 
   useEffect(() => {
     if (lastMessage) {
@@ -69,30 +80,63 @@ const CallSummary = () => {
           </div>
         </div>
         {expandedSection === "callSummary" && (
-          <>
-            <div className="self-stretch p-5 inline-flex flex-col justify-start items-start gap-2.5 overflow-hidden">
+          <div className="overflow-y-auto overflow-x-hidden h-[calc(100%-63px)]" style={{
+            scrollbarWidth: 'thin',
+            msOverflowStyle: 'auto',
+            WebkitOverflowScrolling: 'touch'
+          }}>
+            
+              <div className="flex justify-center items-center w-full py-4 border-b border-gray-100 bg-white">
+                <button 
+                  className="w-[214px] px-6 py-2 rounded-3xl justify-center items-center gap-4 border bg-white text-xs hover:bg-gray-50 transition-colors"
+                >
+                  Generate Summary
+                </button>
+              </div>
+            
+            <div className="self-stretch p-5 inline-flex flex-col justify-start items-start gap-2.5">
               <div className="self-stretch flex flex-col justify-start items-start gap-0.5">
-                <div className="flex flex-col justify-start items-start">
-                  <div className="w-52 p-[5px] inline-flex justify-center items-center">
-                    <div className="flex-1 opacity-90 justify-center text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug">
+              <div className="py-px inline-flex justify-center items-center gap-2.5">
+                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Start: </span><span className="text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug"></span></div>
+              </div>
+              <div className="inline-flex justify-center items-center gap-2.5">
+                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">End: </span><span className="text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug"></span></div>
+              </div>
+              <div className="inline-flex justify-center items-center gap-2.5">
+                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Duration: </span><span className="text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug"></span></div>
+              </div>
+                <div className="flex flex-col justify-start items-start w-full">
+                  <div className="w-full p-[5px]">
+                    <div className="opacity-90 justify-center text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug">
                       {summary ? (summary) : (<InlineLoading description={t("loadingSummary")} />)}
                     </div>
                   </div>
+                  {summary && (
+                    <div className="w-full flex justify-end p-2">
+                      <button 
+                        onClick={handleCopy}
+                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        title="Copy to clipboard"
+                      >
+                        <Copy size={20} className="text-gray-600" />
+                      </button>
+                    </div>
+                  )}
                 </div>
-              </div>
 
-              {/* <pre>
-                {summary ? (
-                  summary
-                ) : (
-                  <InlineLoading description={t("loadingSummary")} />
-                )}
-              </pre> */}
+                {/* <pre>
+                  {summary ? (
+                    summary
+                  ) : (
+                    <InlineLoading description={t("loadingSummary")} />
+                  )}
+                </pre> */}
+              </div>
+              {/* <div className="px-4 py-2 text-sm text-gray-600">
+                conversation Id: {conversationid}
+              </div> */}
             </div>
-            {/* <div className="px-4 py-2 text-sm text-gray-600">
-              conversation Id: {conversationid}
-            </div> */}
-          </>
+          </div>
         )}
       </div>
     </div>

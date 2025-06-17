@@ -56,7 +56,7 @@ const Conversation = () => {
         {isOpen && (
           <div
             ref={scrollRef}
-            className="overflow-y-auto scrollbar-hide h-[715px] self-stretch px-5 py-7 inline-flex flex-col justify-start items-start gap-2.5"
+            className="overflow-y-auto scrollbar-hide h-[715px] self-stretch px-5 py-7 flex-col justify-start items-start gap-2.5"
             style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',

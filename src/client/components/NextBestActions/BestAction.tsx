@@ -182,7 +182,33 @@ const BestAction = ({
                 <MisuseOutline className="outline-red-300"/>
                 {/* <div className="w-6 h-6 text-center justify-center text-emerald-300 text-xl font-normal font-['Material_Symbols_Rounded_48pt']">Check_Circle</div> */}
               </div>
-              <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Caller identified</div>
+              <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Unable to Identify</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-emerald-300 inline-flex flex-col justify-start items-end gap-2">
+          <div className="self-stretch inline-flex justify-start items-start gap-1">
+            <div className="flex-1 flex justify-center items-center gap-2.5">
+              <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
+                <CheckmarkOutline className="outline-emerald-300"/>
+                {/* <div className="w-6 h-6 text-center justify-center text-emerald-300 text-xl font-normal font-['Material_Symbols_Rounded_48pt']">Check_Circle</div> */}
+              </div>
+              <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Caller Verified</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-red-300 inline-flex flex-col justify-start items-end gap-2">
+          <div className="self-stretch inline-flex justify-start items-start gap-1">
+            <div className="flex-1 flex justify-center items-center gap-2.5">
+              <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
+                <MisuseOutline className="outline-red-300"/>
+                {/* <div className="w-6 h-6 text-center justify-center text-emerald-300 text-xl font-normal font-['Material_Symbols_Rounded_48pt']">Check_Circle</div> */}
+              </div>
+              <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Unable to Verify</div>
             </div>
           </div>
         </div>
