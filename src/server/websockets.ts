@@ -20,9 +20,7 @@ export default function setupWebsockets(app: Express) {
     target: ANN_SOCKETIO_SERVER,
     changeOrigin: true,
     ws: true,
-    pathRewrite: {
-      '^/socket.io': '/socket.io/celery' // Rewrite path to include celery namespace
-    },
+    
     proxyTimeout: 60000, // 60 seconds
     timeout: 60000 // 60 seconds
   });
