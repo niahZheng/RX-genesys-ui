@@ -30,7 +30,7 @@ const NextBestActions = () => {
   const [sessionId, setSessionId] = useState<String>();
   const scrollRef = useRef<HTMLDivElement>(null);
   const { expandedSection, setExpandedSection } = useAccordion();
-
+  const conversationid = new URLSearchParams(window.location.search).get('conversationid') || 'undefined';
   useEffect(() => {
     if (lastMessage) {
       const payload: SocketPayload = JSON.parse(lastMessage?.payloadString);
@@ -74,6 +74,16 @@ const NextBestActions = () => {
     });
   };
 
+  const requestSummary = (conversationId: any) => {
+    const payload = {
+      destination: `agent-assist/${conversationId}/ui`,
+      text: "callSummary",
+    }
+    console.log("requestSummary  test",payload)
+    // socket.emit("webUiMessage", JSON.stringify(payload))
+    socket.emit("callSummary", JSON.stringify(payload));
+    console.log("callSummary socket emit sucessfully")
+  }
   // this emits a message back to api-server, which then creates a celery task
   const sendManualCompletion = () => {
     const payload = {
@@ -143,7 +153,7 @@ const NextBestActions = () => {
             <div className="flex justify-center items-center w-full py-4 border-t border-gray-100 bg-white">
               <button 
                 className="w-[214px] px-6 py-2 rounded-3xl justify-center items-center gap-4 border bg-white text-xs hover:bg-gray-50 transition-colors"
-                onClick={() => setExpandedSection('callSummary')}
+                onClick={() => {setExpandedSection('callSummary');requestSummary(conversationid)}}
               >
                 Generate Summary
               </button>

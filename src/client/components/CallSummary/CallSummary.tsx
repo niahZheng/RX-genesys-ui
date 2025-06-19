@@ -6,6 +6,7 @@ import {SocketPayload, useSocketEvent} from "@client/providers/Socket";
 import { InlineLoading} from "@carbon/react";
 import { useAccordion } from "@client/context/AccordionContext";
 import { Copy } from "@carbon/icons-react";
+import { useSocket } from "@client/providers/Socket";
 
 const CallSummary = () => {
   const [summary, setSummary] = useState<string>("");
@@ -23,6 +24,19 @@ const CallSummary = () => {
       console.error('Failed to copy text: ', err);
     });
   };
+
+  
+  const {socket} = useSocket();
+  const requestSummary = (conversationId: any) => {
+    const payload = {
+      destination: `agent-assist/${conversationId}/ui`,
+      text: "callSummary",
+    }
+    console.log("requestSummary test",payload)
+    // socket.emit("webUiMessage", JSON.stringify(payload))
+    socket.emit("callSummary", JSON.stringify(payload))
+    console.log("callSummary socket emit sucessfully")
+  }
 
   useEffect(() => {
     if (lastMessage) {
@@ -89,6 +103,7 @@ const CallSummary = () => {
               <div className="flex justify-center items-center w-full py-4 border-b border-gray-100 bg-white">
                 <button 
                   className="w-[214px] px-6 py-2 rounded-3xl justify-center items-center gap-4 border bg-white text-xs hover:bg-gray-50 transition-colors"
+                  onClick={() => requestSummary(conversationid)}
                 >
                   Generate Summary
                 </button>
