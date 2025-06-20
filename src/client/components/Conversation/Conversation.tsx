@@ -67,6 +67,7 @@ const Conversation = () => {
                 key={`${message.session_id}-${index}`} 
                 data={message}
                 prevMessage={index > 0 ? conversation[index - 1] : undefined}
+                nextMessage={index < conversation.length - 1 ? conversation[index + 1] : undefined}
               />
             ))}
           </div>
