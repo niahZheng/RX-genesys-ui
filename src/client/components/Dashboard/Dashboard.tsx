@@ -12,14 +12,14 @@ const Dashboard = () => {
   const [open, setOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  useEffect(() => {
-    initChatConnectorSession().then((result) => {
-      if (result?.status === "error") {
-        setErrorMessage(result.message + ": " + result.error);
-        setOpen(true);
-      }
-    })
-  }, []);
+  // useEffect(() => {
+  //   initChatConnectorSession().then((result) => {
+  //     if (result?.status === "error") {
+  //       setErrorMessage(result.message + ": " + result.error);
+  //       setOpen(true);
+  //     }
+  //   })
+  // }, []);
 
   const onClose = () => {
     setOpen(false);
