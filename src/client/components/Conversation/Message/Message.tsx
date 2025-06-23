@@ -56,8 +56,8 @@ const Message = ({ data, prevMessage, nextMessage }: MessageProps) => {
           <div
             className={`p-3 w-full max-w-72 ${
               isAgentMessage
-                ? "bg-gray-300 border-gray-600"
-                : "bg-purple-300 border-black"
+                ? "bg-[#E6E5FF] border-gray-600"
+                : "bg-[#E5E5EA] border-black"
             } ${isAgentMessage ? "rounded-tr-2xl rounded-br-2xl" : "rounded-tl-2xl rounded-bl-2xl"} mb-2.5 inline-flex justify-start items-center gap-2.5`}
           >
             <p

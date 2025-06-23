@@ -8,6 +8,9 @@ import sanitizeHtml from "sanitize-html";
 import { useEffect, useState } from "react";
 import { useSocket } from "@client/providers/Socket";
 
+
+const status = true;
+
 type ActionOptions = {
   icon: any;
   style: any;
@@ -24,6 +27,8 @@ const BestAction = ({
 }) => {
   const { t } = useTranslation();
   const { socket } = useSocket();
+
+  const [expanded, setExpanded] = useState(false);
 
   const getIcon = (state: ActionState) => {
     switch (state) {
@@ -84,6 +89,32 @@ const BestAction = ({
     }
   };
 
+  const confirmIdentify = (data:any) => {
+    socket.emit("callIdentification", data, (response:any) => {
+      // 这里的 response 就是服务端 callback 返回的对象
+      if (response.status === "success") {
+        // 处理成功逻辑
+        console.log("成功：", response.message);
+      } else {
+        // 处理失败逻辑
+        console.error("失败：", response.message);
+      }
+    });
+  }
+
+  const confirmVerify = (data:any) => {
+    socket.emit("callVerification", data, (response:any) => {
+      // 这里的 response 就是服务端 callback 返回的对象
+      if (response.status === "success") {
+        // 处理成功逻辑
+        console.log("成功：", response.message);
+      } else {
+        // 处理失败逻辑
+        console.error("失败：", response.message);
+      }
+    });
+  }
+
   return (
     // <div className={`${styles.actionTile} ${actionOptions.style}`}>
     //   <Tooltip label={t("clickToComplete")} align="bottom" autoAlign className={styles.tooltip}>
@@ -117,10 +148,14 @@ const BestAction = ({
           </div>
         </div>
         <div>
-          <button className="self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border bg-[#240852] text-white text-xs">
+          <button className="self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border bg-[#240852] text-white text-xs" 
+          onClick={() => confirmIdentify(status)}
+          >
             Confirm Identity
           </button>
-          <button className="self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border bg-white text-xs">
+          <button className="self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border bg-white text-xs"
+          onClick={() => confirmIdentify(!status)}
+          >
             Unable to Identify
           </button>
         </div>
@@ -152,10 +187,14 @@ const BestAction = ({
             </div>
           </div>
           <div>
-            <button className="self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border bg-[#240852] text-white text-xs">
+            <button className="self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border bg-[#240852] text-white text-xs"
+            onClick={() => confirmVerify(status)}
+            >
               Confirm Verification
             </button>
-            <button className="self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border bg-white text-xs">
+            <button className="self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border bg-white text-xs"
+            onClick={() => confirmVerify(!status)}
+            >
               Unable to Verification
             </button>
           </div>
@@ -188,11 +227,12 @@ const BestAction = ({
         </div>
       </div>
       <div>
-        <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-emerald-300 inline-flex flex-col justify-start items-end gap-2">
+      <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-emerald-300 inline-flex flex-col justify-start items-end gap-2">
           <div className="self-stretch inline-flex justify-start items-start gap-1">
             <div className="flex-1 flex justify-center items-center gap-2.5">
               <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
                 <CheckmarkOutline className="outline-emerald-300"/>
+                {/* <FontAwesomeIcon icon={faCircleCheck} style={{color: "#71cda2",}} /> */}
                 {/* <div className="w-6 h-6 text-center justify-center text-emerald-300 text-xl font-normal font-['Material_Symbols_Rounded_48pt']">Check_Circle</div> */}
               </div>
               <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Caller Verified</div>
@@ -201,7 +241,7 @@ const BestAction = ({
         </div>
       </div>
       <div>
-        <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-red-300 inline-flex flex-col justify-start items-end gap-2">
+      <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-red-300 inline-flex flex-col justify-start items-end gap-2">
           <div className="self-stretch inline-flex justify-start items-start gap-1">
             <div className="flex-1 flex justify-center items-center gap-2.5">
               <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
@@ -211,6 +251,40 @@ const BestAction = ({
               <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Unable to Verify</div>
             </div>
           </div>
+        </div>
+      </div>
+      <div>
+        <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2">
+          <div className="self-stretch inline-flex justify-start items-start gap-1">
+            <div className="flex-1 flex justify-center items-center gap-2.5">
+              <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">
+                Confirm the latest departure time from the live flight status system.
+              </div>
+            </div>
+            <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
+              <div 
+                className={`accordion-arrow transform transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
+                onClick={() => setExpanded(!expanded)}
+              >
+                <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4.94 5.72668L8 8.78002L11.06 5.72668L12 6.66668L8 10.6667L4 6.66668L4.94 5.72668Z" fill="#000000"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          {expanded && (
+            <div className="self-stretch flex flex-col justify-center items-center gap-2.5">
+              <div className="self-stretch justify-start">
+                <span className="text-Text-Dark text-xs font-normal font-['Loew_Riyadh_Air'] leading-none">Provide:<br/></span>
+                <span className="text-Text-Dark text-xs font-normal font-['Loew_Riyadh_Air'] leading-none">
+                  Updated departure time (if different)<br/>
+                  Confirm if gate or terminal has changed<br/>
+                  Mention if a new boarding pass will be sent<br/>
+                  Advise standard check-in arrival time (e.g., 2 hours before departure)
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
