@@ -233,7 +233,8 @@ const BestAction = ({
           <div className="self-stretch inline-flex justify-start items-start gap-1">
             <div className="flex-1 flex justify-center items-center gap-2.5">
               <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
-                <CheckmarkOutline className="outline-emerald-300"/>
+                {/* <CheckmarkOutline className="outline-emerald-300"/> */}
+                <CheckmarkOutline style={{ color: '#71CDA2' }} />
                 {/* <div className="w-6 h-6 text-center justify-center text-emerald-300 text-xl font-normal font-['Material_Symbols_Rounded_48pt']">Check_Circle</div> */}
               </div>
               <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Caller identified</div>
@@ -246,7 +247,7 @@ const BestAction = ({
           <div className="self-stretch inline-flex justify-start items-start gap-1">
             <div className="flex-1 flex justify-center items-center gap-2.5">
               <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
-                <MisuseOutline className="outline-red-300"/>
+                <MisuseOutline style={{color:"#E97075"}}/>
                 {/* <div className="w-6 h-6 text-center justify-center text-emerald-300 text-xl font-normal font-['Material_Symbols_Rounded_48pt']">Check_Circle</div> */}
               </div>
               <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Unable to Identify</div>
@@ -259,7 +260,7 @@ const BestAction = ({
           <div className="self-stretch inline-flex justify-start items-start gap-1">
             <div className="flex-1 flex justify-center items-center gap-2.5">
               <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
-                <CheckmarkOutline className="outline-emerald-300"/>
+                <CheckmarkOutline style={{ color: '#71CDA2' }} />
                 {/* <FontAwesomeIcon icon={faCircleCheck} style={{color: "#71cda2",}} /> */}
                 {/* <div className="w-6 h-6 text-center justify-center text-emerald-300 text-xl font-normal font-['Material_Symbols_Rounded_48pt']">Check_Circle</div> */}
               </div>
@@ -273,7 +274,7 @@ const BestAction = ({
           <div className="self-stretch inline-flex justify-start items-start gap-1">
             <div className="flex-1 flex justify-center items-center gap-2.5">
               <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
-                <MisuseOutline className="outline-red-300"/>
+                <MisuseOutline style={{color:"#E97075"}}/>
                 {/* <div className="w-6 h-6 text-center justify-center text-emerald-300 text-xl font-normal font-['Material_Symbols_Rounded_48pt']">Check_Circle</div> */}
               </div>
               <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Unable to Verify</div>
