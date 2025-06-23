@@ -9,7 +9,8 @@ import { useEffect, useState } from "react";
 import { useSocket } from "@client/providers/Socket";
 
 
-const status = true;
+const identificationStatus = true;
+const verificationStatus = true;
 
 type ActionOptions = {
   icon: any;
@@ -29,6 +30,12 @@ const BestAction = ({
   const { socket } = useSocket();
 
   const [expanded, setExpanded] = useState(false);
+  const [confirmingIdentify, setConfirmingIdentify] = useState(false);
+  const [loadingUnableIdentify, setLoadingUnableIdentify] = useState(false);
+  const [confirmingVerify, setConfirmingVerify] = useState(false);
+  const [loadingUnableVerify, setLoadingUnableVerify] = useState(false);
+
+  const conversationid = new URLSearchParams(window.location.search).get('conversationid') || 'undefined';
 
   const getIcon = (state: ActionState) => {
     switch (state) {
@@ -89,27 +96,29 @@ const BestAction = ({
   //   }
   // };
 
-  const confirmIdentify = (data:any) => {
+  const confirmIdentify = (data:any, type: 'confirm' | 'unable') => {
+    if (type === 'confirm') setConfirmingIdentify(true);
+    if (type === 'unable') setLoadingUnableIdentify(true);
     socket.emit("callIdentification", data, (response:any) => {
-      // 这里的 response 就是服务端 callback 返回的对象
+      if (type === 'confirm') setConfirmingIdentify(false);
+      if (type === 'unable') setLoadingUnableIdentify(false);
       if (response.status === "success") {
-        // 处理成功逻辑
         console.log("成功：", response.message);
       } else {
-        // 处理失败逻辑
         console.error("失败：", response.message);
       }
     });
   }
 
-  const confirmVerify = (data:any) => {
-    socket.emit("callVerification", data, (response:any) => {
-      // 这里的 response 就是服务端 callback 返回的对象
+  const confirmVerify = (data:any, type: 'confirm' | 'unable') => {
+    if (type === 'confirm') setConfirmingVerify(true);
+    if (type === 'unable') setLoadingUnableVerify(true);
+    socket.emit("callValidation", data, (response:any) => {
+      if (type === 'confirm') setConfirmingVerify(false);
+      if (type === 'unable') setLoadingUnableVerify(false);
       if (response.status === "success") {
-        // 处理成功逻辑
         console.log("成功：", response.message);
       } else {
-        // 处理失败逻辑
         console.error("失败：", response.message);
       }
     });
@@ -148,15 +157,17 @@ const BestAction = ({
           </div>
         </div>
         <div>
-          <button className="self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border bg-[#240852] text-white text-xs" 
-          onClick={() => confirmIdentify(status)}
+          <button className={`self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border text-xs mb-2 ${confirmingIdentify ? 'opacity-50 bg-[#EDECEE] text-black' : 'bg-[#240852] text-white'}`}
+          onClick={() => confirmIdentify(conversationid, 'confirm')}
+          disabled={confirmingIdentify || loadingUnableIdentify}
           >
-            Confirm Identity
+            {confirmingIdentify ? 'Confirming' : 'Confirm Identity'}
           </button>
-          <button className="self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border bg-white text-xs"
-          onClick={() => confirmIdentify(!status)}
+          <button className={`self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border  text-xs ${loadingUnableIdentify ? 'opacity-50 bg-[#EDECEE]' : 'bg-white'}`}
+          onClick={() => confirmIdentify(conversationid, 'unable')}
+          disabled={loadingUnableIdentify || confirmingIdentify}
           >
-            Unable to Identify
+            {loadingUnableIdentify ? 'Loading' : 'Unable to Identify'}
           </button>
         </div>
       </div>
@@ -187,16 +198,33 @@ const BestAction = ({
             </div>
           </div>
           <div>
-            <button className="self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border bg-[#240852] text-white text-xs"
-            onClick={() => confirmVerify(status)}
+          <button className={`self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border text-xs mb-2 ${confirmingVerify ? 'opacity-50 bg-[#EDECEE] text-black' : 'bg-[#240852] text-white'}`}
+          onClick={() => confirmVerify(conversationid, 'confirm')}
+          disabled={confirmingVerify || loadingUnableVerify}
+          >
+            {confirmingVerify ? 'Confirming' : 'Confirm Verification'}
+          </button>
+          <button className={`self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border  text-xs ${loadingUnableVerify ? 'opacity-50 bg-[#EDECEE]' : 'bg-white'}`}
+          onClick={() => confirmVerify(conversationid, 'unable')}
+          disabled={loadingUnableVerify || confirmingVerify}
+          >
+            {loadingUnableVerify ? 'Loading' : 'Unable to Verification'}
+          </button>            
+
+
+
+
+
+            {/* <button className="self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border bg-[#240852] text-white text-xs mb-2"
+            onClick={() => confirmVerify(verificationStatus)}
             >
               Confirm Verification
             </button>
             <button className="self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border bg-white text-xs"
-            onClick={() => confirmVerify(!status)}
+            onClick={() => confirmVerify(!verificationStatus)}
             >
               Unable to Verification
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

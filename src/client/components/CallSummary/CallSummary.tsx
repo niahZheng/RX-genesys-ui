@@ -1,9 +1,9 @@
 import * as styles from "./CallSummary.module.scss";
 import * as widgetStyles from "@client/widget.module.scss";
 import {useTranslation} from "react-i18next";
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef} from "react";
 import {SocketPayload, useSocketEvent} from "@client/providers/Socket";
-import { InlineLoading} from "@carbon/react";
+import { InlineLoading, InlineNotification } from "@carbon/react";
 import { useAccordion } from "@client/context/AccordionContext";
 import { Copy } from "@carbon/icons-react";
 import { useSocket } from "@client/providers/Socket";
@@ -14,6 +14,9 @@ const CallSummary = () => {
   const {lastMessage} = useSocketEvent('celeryMessage');
   const { expandedSection, setExpandedSection } = useAccordion();
   const conversationid = new URLSearchParams(window.location.search).get('conversationid') || 'undefined';
+  const [loading, setLoading] = useState(false);
+  const [timeoutError, setTimeoutError] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleCopy = () => {
     // const textToCopy = `Start: ${startTime}\nEnd: ${endTime}\nDuration: ${duration}\n\n${summary}`;
@@ -28,12 +31,17 @@ const CallSummary = () => {
   
   const {socket} = useSocket();
   const requestSummary = (conversationId: any) => {
+    setLoading(true);
+    setTimeoutError(false);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      setLoading(false);
+      setTimeoutError(true);
+    }, 300000); // 5分钟
     const payload = {
       destination: `agent-assist/${conversationId}/ui`,
       text: "callSummary",
     }
-    console.log("requestSummary test",payload)
-    // socket.emit("webUiMessage", JSON.stringify(payload))
     socket.emit("callSummary", JSON.stringify(payload))
     console.log("callSummary socket emit sucessfully")
   }
@@ -41,11 +49,14 @@ const CallSummary = () => {
   useEffect(() => {
     if (lastMessage) {
       const payload: SocketPayload = JSON.parse(lastMessage?.payloadString);
-
       if (payload?.type === "summary" && payload?.parameters?.text) {
         setSummary(payload?.parameters?.text?.trim() || "");
+        setLoading(false);
+        setTimeoutError(false);
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
       }
     }
+    // eslint-disable-next-line
   }, [lastMessage])
 
   return (
@@ -99,16 +110,25 @@ const CallSummary = () => {
             msOverflowStyle: 'auto',
             WebkitOverflowScrolling: 'touch'
           }}>
-            
-              <div className="flex justify-center items-center w-full py-4 border-b border-gray-100 bg-white">
-                <button 
-                  className="w-[214px] px-6 py-2 rounded-3xl justify-center items-center gap-4 border bg-white text-xs hover:bg-gray-50 transition-colors"
-                  onClick={() => requestSummary(conversationid)}
-                >
-                  Generate Summary
-                </button>
+            <div className="flex justify-center items-center w-full py-4 border-b border-gray-100 bg-white">
+              <button 
+                className="w-[214px] px-6 py-2 rounded-3xl justify-center items-center gap-4 border bg-white text-xs hover:bg-gray-50 transition-colors"
+                onClick={() => requestSummary(conversationid)}
+                disabled={loading}
+              >
+                {loading ? t("loadingSummary") : "Generate Summary"}
+              </button>
+            </div>
+            {timeoutError && (
+              <div className="w-full flex justify-center p-2">
+                <InlineNotification
+                  kind="error"
+                  title="请求超时"
+                  subtitle="生成摘要超时，请重试。"
+                  onCloseButtonClick={() => setTimeoutError(false)}
+                />
               </div>
-            
+            )}
             <div className="self-stretch p-5 inline-flex flex-col justify-start items-start gap-2.5">
               <div className="self-stretch flex flex-col justify-start items-start gap-0.5">
               <div className="py-px inline-flex justify-center items-center gap-2.5">
@@ -123,7 +143,7 @@ const CallSummary = () => {
                 <div className="flex flex-col justify-start items-start w-full">
                   <div className="w-full p-[5px]">
                     <div className="opacity-90 justify-center text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug">
-                      {summary ? (summary) : (<InlineLoading description={t("loadingSummary")} />)}
+                      {summary ? (summary) : (loading ? <InlineLoading description={t("loadingSummary")} /> : null)}
                     </div>
                   </div>
                   {summary && (
@@ -138,18 +158,7 @@ const CallSummary = () => {
                     </div>
                   )}
                 </div>
-
-                {/* <pre>
-                  {summary ? (
-                    summary
-                  ) : (
-                    <InlineLoading description={t("loadingSummary")} />
-                  )}
-                </pre> */}
               </div>
-              {/* <div className="px-4 py-2 text-sm text-gray-600">
-                conversation Id: {conversationid}
-              </div> */}
             </div>
           </div>
         )}
