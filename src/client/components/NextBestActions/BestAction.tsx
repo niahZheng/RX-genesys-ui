@@ -17,11 +17,11 @@ type ActionOptions = {
 };
 
 const BestAction = ({
-  action,
+  // action,
   updateAction,
   sendManualCompletion,
 }: {
-  action: Action;
+  // action: Action;
   updateAction: (action: Action) => void;
   sendManualCompletion: () => void;
 }) => {
@@ -43,51 +43,51 @@ const BestAction = ({
     }
   };
 
-  const [actionOptions, setActionOptions] = useState<ActionOptions>({
-    icon: getIcon(action.state),
-    style: styles[action.state],
-  });
+  // const [actionOptions, setActionOptions] = useState<ActionOptions>({
+  //   icon: getIcon(action.state),
+  //   style: styles[action.state],
+  // });
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (action?.state !== ActionState.complete) {
-        const passedTime = (new Date().getTime() - action.createdAt) / 1000;
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (action?.state !== ActionState.complete) {
+  //       const passedTime = (new Date().getTime() - action.createdAt) / 1000;
 
-        if (passedTime > 15 && passedTime < 30) {
-          action.state = ActionState.stale;
-        } else if (passedTime >= 30) {
-          action.state = ActionState.expired;
-        } else {
-          action.state = ActionState.active;
-        }
-      }
+  //       if (passedTime > 15 && passedTime < 30) {
+  //         action.state = ActionState.stale;
+  //       } else if (passedTime >= 30) {
+  //         action.state = ActionState.expired;
+  //       } else {
+  //         action.state = ActionState.active;
+  //       }
+  //     }
 
-      setActionOptions({
-        icon: getIcon(action.state),
-        style: styles[action.state],
-      });
+  //     setActionOptions({
+  //       icon: getIcon(action.state),
+  //       style: styles[action.state],
+  //     });
 
-      if (
-        action?.state === ActionState.expired ||
-        action?.state === ActionState.complete
-      ) {
-        clearInterval(interval);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [action]);
+  //     if (
+  //       action?.state === ActionState.expired ||
+  //       action?.state === ActionState.complete
+  //     ) {
+  //       clearInterval(interval);
+  //     }
+  //   }, 1000);
+  //   return () => clearInterval(interval);
+  // }, [action]);
 
-  const completeAction = () => {
-    if (action?.state !== ActionState.complete) {
-      action.state = ActionState.complete;
-      updateAction(action);
-      setActionOptions({
-        icon: getIcon(action.state),
-        style: styles[action.state],
-      });
-      sendManualCompletion();
-    }
-  };
+  // const completeAction = () => {
+  //   if (action?.state !== ActionState.complete) {
+  //     action.state = ActionState.complete;
+  //     updateAction(action);
+  //     setActionOptions({
+  //       icon: getIcon(action.state),
+  //       style: styles[action.state],
+  //     });
+  //     sendManualCompletion();
+  //   }
+  // };
 
   const confirmIdentify = (data:any) => {
     socket.emit("callIdentification", data, (response:any) => {
