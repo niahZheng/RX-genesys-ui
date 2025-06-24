@@ -156,7 +156,11 @@ const NextBestActions = () => {
             <div className="flex justify-center items-center w-full py-4 border-t border-gray-100 bg-white">
               <button 
                 className="w-[214px] px-6 py-2 rounded-3xl justify-center items-center gap-4 border bg-white text-xs hover:bg-gray-50 transition-colors"
-                onClick={() => {setExpandedSection('callSummary');requestSummary(conversationid)}}
+                onClick={() => {setExpandedSection('callSummary');
+                //   setTimeout(() => {
+                //   requestSummary(conversationid);
+                // }, 100);
+              }}
               >
                 Generate Summary
               </button>

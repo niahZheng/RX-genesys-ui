@@ -37,6 +37,7 @@ export type SocketParameters = {
   title: string;
   value: string;
   text: string;
+  conversationStartTime:string;
   action_id: number;
   session_id: string;
 };
@@ -44,4 +45,5 @@ export type SocketParameters = {
 export type SocketPayload = {
   type: string;
   parameters: SocketParameters;
+  conversationEndTime: string;
 };

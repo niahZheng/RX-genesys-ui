@@ -10,6 +10,8 @@ import { useSocket } from "@client/providers/Socket";
 
 const CallSummary = () => {
   const [summary, setSummary] = useState<string>("");
+  const [startTime,setStartTime] = useState<string>("");
+  const [endTime,setEndTime] = useState<string>("");
   const {t} = useTranslation();
   const {lastMessage} = useSocketEvent('celeryMessage');
   const { expandedSection, setExpandedSection } = useAccordion();
@@ -17,12 +19,18 @@ const CallSummary = () => {
   const [loading, setLoading] = useState(false);
   const [timeoutError, setTimeoutError] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    // const textToCopy = `Start: ${startTime}\nEnd: ${endTime}\nDuration: ${duration}\n\n${summary}`;
-    const textToCopy = `${summary}`;
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      console.log('Text copied to clipboard');
+    // 复制summary section中除按钮外的所有内容
+    let textToCopy = '';
+    if (startTime) textToCopy += `Start: ${formattedStartTime}\n`;
+    if (endTime) textToCopy += `End: ${formattedEndTime}\n`;
+    if (startTime && endTime) textToCopy += `Duration: ${duration}\n`;
+    if (summary) textToCopy += `\n${summary}`;
+    navigator.clipboard.writeText(textToCopy.trim()).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }).catch(err => {
       console.error('Failed to copy text: ', err);
     });
@@ -51,6 +59,8 @@ const CallSummary = () => {
       const payload: SocketPayload = JSON.parse(lastMessage?.payloadString);
       if (payload?.type === "summary" && payload?.parameters?.text) {
         setSummary(payload?.parameters?.text?.trim() || "");
+        setStartTime(payload?.parameters?.conversationStartTime || "");
+        setEndTime(payload?.conversationEndTime || "");
         setLoading(false);
         setTimeoutError(false);
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -59,12 +69,74 @@ const CallSummary = () => {
     // eslint-disable-next-line
   }, [lastMessage])
 
+  const formatDateTime = (dateTimeString: string | number | Date) => {
+    const date = new Date(dateTimeString);
+    return date.toLocaleString('en-GB', {
+      weekday: 'short',
+      day: '2-digit', 
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  };
+
+  const formattedStartTime = formatDateTime(startTime);
+  const formattedEndTime = formatDateTime(endTime);
+
+  const calculateDuration = (startTime:any, endTime:any) => {
+    const start:any = new Date(startTime);
+    const end:any = new Date(endTime);
+    
+    // 计算时间差（毫秒）
+    const diffInMs = end - start;
+    
+    // 转换为小时、分钟、秒
+    const hours = Math.floor(diffInMs / (1000 * 60 * 60));
+    const minutes = Math.floor((diffInMs % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diffInMs % (1000 * 60)) / 1000);
+    
+    // 格式化输出
+    if (hours > 0) {
+      return `${hours}h ${minutes}m ${seconds}s`;
+    } else if (minutes > 0) {
+      return `${minutes}m ${seconds}s`;
+    } else {
+      return `${seconds}s`;
+    }
+  };
+
+  const duration = calculateDuration(startTime, endTime);
+
+  // 处理 summary 字符串中的转义字符
+  const parseSummary = (raw: string) => {
+    if (!raw) return "";
+    try {
+      // // 先将所有 \\u 替换为 \u，防止双转义
+      // const fixed = raw.replace(/\\u/g, '\u');
+      // 用 JSON.parse 解析所有转义字符（包括 \n、\uXXXX）
+      const parsed = JSON.parse('"' + raw.replace(/"/g, '\\"') + '"');
+      // 再将 \n 替换为 <br />
+      return parsed.split('\n').map((line: string, idx: number, arr: string[]) => (
+        <span key={idx}>
+          {line}
+          {idx !== arr.length - 1 && <br />}
+        </span>
+      ));
+    } catch (e) {
+      // 解析失败则原样输出
+      return raw;
+    }
+  };
+
   return (
     // <div className={widgetStyles.dashboardWidget}>
     <div
       className={`flex flex-col items-start shrink-0 rounded-xl bg-white mt-[20px] self-stretch gap-2.5 border border-solid border-gray-100 ${
         expandedSection === "callSummary" ? "h-[690px]" : "h-[63px]"
       }`}
+      style={{ position: 'relative' }}
     >
       <div className="w-full rounded-xl overflow-hidden">
         <div
@@ -132,33 +204,50 @@ const CallSummary = () => {
             <div className="self-stretch p-5 inline-flex flex-col justify-start items-start gap-2.5">
               <div className="self-stretch flex flex-col justify-start items-start gap-0.5">
               <div className="py-px inline-flex justify-center items-center gap-2.5">
-                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Start: </span><span className="text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug"></span></div>
+                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Start: </span><span className="text-Labels-Primary text-sm leading-snug">{startTime ? formattedStartTime : ""}</span><span className="text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug"></span></div>
               </div>
               <div className="inline-flex justify-center items-center gap-2.5">
-                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">End: </span><span className="text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug"></span></div>
+                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">End: </span><span className="text-Labels-Primary text-sm leading-snug">{endTime ? formattedEndTime : ""}</span><span className="text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug"></span></div>
               </div>
               <div className="inline-flex justify-center items-center gap-2.5">
-                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Duration: </span><span className="text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug"></span></div>
+                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Duration: </span><span className="text-Labels-Primary text-sm leading-snug">{startTime && endTime ? duration : ""}</span><span className="text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug"></span></div>
               </div>
                 <div className="flex flex-col justify-start items-start w-full">
                   <div className="w-full p-[5px]">
                     <div className="opacity-90 justify-center text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug">
-                      {summary ? (summary) : (loading ? <InlineLoading description={t("loadingSummary")} /> : null)}
+                      {summary ? parseSummary(summary) : (loading ? <InlineLoading description={t("loadingSummary")} /> : null)}
                     </div>
                   </div>
-                  {summary && (
-                    <div className="w-full flex justify-end p-2">
-                      <button 
-                        onClick={handleCopy}
-                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                        title="Copy to clipboard"
-                      >
-                        <Copy size={20} className="text-gray-600" />
-                      </button>
-                    </div>
-                  )}
+                  
                 </div>
+                
               </div>
+              {summary && (
+                <div style={{
+                  position: 'absolute',
+                  right: 24,
+                  bottom: 24,
+                  zIndex: 10,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-end'
+                }}>
+                  {copied && (
+                    <div className="p-2 bg-[#E6E5FF] rounded-lg inline-flex justify-start items-start gap-1">
+                    <div className="max-h-16 text-center justify-end text-xs font-normal leading-none">Summary Copied!</div>
+                    </div>
+                    
+                  )}
+                  <button
+                    onClick={handleCopy}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
+                    title="Copy to clipboard"
+                  >
+                    <Copy size={20} className="text-gray-600" />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
