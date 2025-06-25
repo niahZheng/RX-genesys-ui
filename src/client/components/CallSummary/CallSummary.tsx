@@ -7,9 +7,13 @@ import { InlineLoading, InlineNotification } from "@carbon/react";
 import { useAccordion } from "@client/context/AccordionContext";
 import { Copy } from "@carbon/icons-react";
 import { useSocket } from "@client/providers/Socket";
+import { array } from "fp-ts";
 
 const CallSummary = () => {
-  const [summary, setSummary] = useState<string>("");
+  const [summary, setSummary] = useState<any>("");
+  const [intent, setIntent] = useState<any>("");
+  const [request_changes, setRequestchanges] = useState<any>("");
+  const [ata, setAta] = useState<any[]>([]);
   const [startTime,setStartTime] = useState<string>("");
   const [endTime,setEndTime] = useState<string>("");
   const {t} = useTranslation();
@@ -58,7 +62,10 @@ const CallSummary = () => {
     if (lastMessage) {
       const payload: SocketPayload = JSON.parse(lastMessage?.payloadString);
       if (payload?.type === "summary" && payload?.parameters?.text) {
-        setSummary(payload?.parameters?.text?.trim() || "");
+        setSummary(payload?.parameters?.text || "");
+        // setIntent(payload?.parameters?.text?.intent || "");
+        // setRequestchanges(payload?.parameters?.text?.request_changes || "");
+        setAta(payload?.parameters?.text?.ata || []);
         setStartTime(payload?.parameters?.conversationStartTime || "");
         setEndTime(payload?.conversationEndTime || "");
         setLoading(false);
@@ -195,8 +202,8 @@ const CallSummary = () => {
               <div className="w-full flex justify-center p-2">
                 <InlineNotification
                   kind="error"
-                  title="请求超时"
-                  subtitle="生成摘要超时，请重试。"
+                  title="Timeout"
+                  subtitle="Generate summary timeout."
                   onCloseButtonClick={() => setTimeoutError(false)}
                 />
               </div>
@@ -212,14 +219,42 @@ const CallSummary = () => {
               <div className="inline-flex justify-center items-center gap-2.5">
                 <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Duration: </span><span className="text-Labels-Primary text-sm leading-snug">{startTime && endTime ? duration : ""}</span><span className="text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug"></span></div>
               </div>
-                <div className="flex flex-col justify-start items-start w-full">
-                  <div className="w-full p-[5px]">
-                    <div className="opacity-90 justify-center text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug">
-                      {summary ? parseSummary(summary) : (loading ? <InlineLoading description={t("loadingSummary")} /> : null)}
-                    </div>
+              <div className="inline-flex justify-center items-center gap-2.5">
+                <div className="opacity-90 justify-center">
+                  <span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Initial Request: </span>
+                  {/* <span className="text-Labels-Primary text-sm leading-snug">{summary?.intent ? summary?.intent : ""}</span> */}
+                  <div className="w-52 p-[5px] inline-flex justify-center items-center">
+                    <div className="flex-1 opacity-90 justify-center text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug">{summary?.intent ? summary?.intent : ""}</div>
                   </div>
-                  
                 </div>
+              </div>
+              <div className="inline-flex justify-center items-center gap-2.5">
+                <div className="opacity-90 justify-center">
+                  <span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Requested Changes: </span>
+                  {/* <span className="text-Labels-Primary text-sm leading-snug">{summary?.request_changes ? summary?.request_changes : ""}</span> */}
+                  <div className="w-52 p-[5px] inline-flex justify-center items-center">
+                    <div className="flex-1 opacity-90 justify-center text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug">{summary?.request_changes ? summary?.request_changes : ""}</div>
+                  </div>
+                </div>
+              </div>
+              <div className="inline-flex justify-center items-center gap-2.5">
+                <div className="opacity-90 justify-center">
+                  <span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Actions Taken by Agent: </span>
+                  
+                  {ata.map((ataitem:any, id:any) =>(
+                  <div className="w-52 p-[5px] inline-flex justify-center items-center">
+                    <div className="flex-1 opacity-90 justify-center text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug">{ataitem ? ataitem : ""}</div>
+                  </div>
+                  ))}
+                </div>
+              </div>
+              {/* <div className="flex flex-col justify-start items-start w-full">
+                <div className="w-full p-[5px]">
+                  <div className="opacity-90 justify-center text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug">
+                    {summary ? parseSummary(summary) : (loading ? <InlineLoading description={t("loadingSummary")} /> : null)}
+                  </div>
+                </div>                  
+              </div> */}
                 
               </div>
               {summary && (

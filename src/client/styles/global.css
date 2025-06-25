@@ -1,3 +1,28 @@
+/* LoewRiyadhAir 字体定义 */
+@font-face {
+  font-family: 'LoewRiyadhAir-Regular';
+  src: url('../Icons/LoewRiyadhAir-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'LoewRiyadhAir-Light';
+  src: url('../Icons/LoewRiyadhAir-Light.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'LoewRiyadhAir-Bold';
+  src: url('../Icons/LoewRiyadhAir-Bold.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* 隐藏 Webkit 浏览器的滚动条 */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;

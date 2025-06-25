@@ -36,7 +36,7 @@ export const useSocketEvent = (eventName: string) => {
 export type SocketParameters = {
   title: string;
   value: string;
-  text: string;
+  text: any;
   conversationStartTime:string;
   action_id: number;
   session_id: string;
