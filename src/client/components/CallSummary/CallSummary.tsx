@@ -31,7 +31,9 @@ const CallSummary = () => {
     if (startTime) textToCopy += `Start: ${formattedStartTime}\n`;
     if (endTime) textToCopy += `End: ${formattedEndTime}\n`;
     if (startTime && endTime) textToCopy += `Duration: ${duration}\n`;
-    if (summary) textToCopy += `\n${summary}`;
+    if (summary?.intent) textToCopy += `Initial Request: ${summary?.intent}`;
+    if (endTime) textToCopy += `Requested Changes: ${summary?.request_changes}\n`;
+    if (endTime) textToCopy += `Actions Taken by Agent: ${ata.toString()}\n`;
     navigator.clipboard.writeText(textToCopy.trim()).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -211,13 +213,13 @@ const CallSummary = () => {
             <div className="self-stretch p-5 inline-flex flex-col justify-start items-start gap-2.5">
               <div className="self-stretch flex flex-col justify-start items-start gap-0.5">
               <div className="py-px inline-flex justify-center items-center gap-2.5">
-                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Start: </span><span className="text-Labels-Primary text-sm leading-snug">{startTime ? formattedStartTime : ""}</span><span className="text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug"></span></div>
+                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Start: </span><span className="text-Labels-Primary text-sm leading-snug">{startTime ? formattedStartTime : ""}</span></div>
               </div>
               <div className="inline-flex justify-center items-center gap-2.5">
-                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">End: </span><span className="text-Labels-Primary text-sm leading-snug">{endTime ? formattedEndTime : ""}</span><span className="text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug"></span></div>
+                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">End: </span><span className="text-Labels-Primary text-sm leading-snug">{endTime ? formattedEndTime : ""}</span></div>
               </div>
               <div className="inline-flex justify-center items-center gap-2.5">
-                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Duration: </span><span className="text-Labels-Primary text-sm leading-snug">{startTime && endTime ? duration : ""}</span><span className="text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug"></span></div>
+                <div className="opacity-90 justify-center"><span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Duration: </span><span className="text-Labels-Primary text-sm leading-snug">{startTime && endTime ? duration : ""}</span></div>
               </div>
               <div className="inline-flex justify-center items-center gap-2.5">
                 <div className="opacity-90 justify-center">
