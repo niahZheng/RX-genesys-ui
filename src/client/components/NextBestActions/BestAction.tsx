@@ -18,11 +18,11 @@ type ActionOptions = {
 };
 
 const BestAction = ({
-  // action,
+  action,
   updateAction,
   sendManualCompletion,
 }: {
-  // action: Action;
+  action: Action;
   updateAction: (action: Action) => void;
   sendManualCompletion: () => void;
 }) => {
@@ -313,8 +313,17 @@ const BestAction = ({
                 </span>
               </div>
             </div>
-          )}
+          )}          
         </div>
+        <div>
+        <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-emerald-300 inline-flex flex-col justify-start items-end gap-2">
+          <div className="self-stretch inline-flex justify-start items-start gap-1">
+            <div className="flex-1 flex justify-center items-center gap-2.5">
+              <div>{action.text}</div>
+            </div>
+          </div>
+        </div>
+      </div>        
       </div>
     </div>
   );
