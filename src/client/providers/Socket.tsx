@@ -34,12 +34,16 @@ export const useSocketEvent = (eventName: string) => {
 }
 
 export type SocketParameters = {
+  quickActions: never[];
+  options: never[];
+  intentType: string;
   title: string;
   value: string;
   text: any;
   conversationStartTime:string;
   action_id: number;
   session_id: string;
+  conversationid?: string;
 };
 
 export type SocketPayload = {

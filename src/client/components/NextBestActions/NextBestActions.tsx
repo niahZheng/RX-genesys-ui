@@ -7,6 +7,7 @@ import BestAction from "./BestAction";
 import * as _ from "lodash";
 import {Accordion, AccordionItem, InlineLoading} from "@carbon/react";
 import { useAccordion } from "@client/context/AccordionContext";
+import { array } from "fp-ts";
 
 export enum ActionState {
   active = "active",
@@ -17,13 +18,19 @@ export enum ActionState {
 
 export type Action = {
   text: string;
-  actionId: number;
+  actionId: number | string;
   state: ActionState;
-  createdAt: number
-}
+  createdAt: number;
+  quickActions?: string[];
+  intentType?: string;
+  options?: string[];
+};
 
 const NextBestActions = () => {
   const [actions, setActions] = useState<Action[]>([]);
+  const [showCallerIdentification, setShowCallerIdentification] = useState(true);
+  const [showCallerVerification, setShowCallerVerification] = useState(true);
+  const [intentType, setIntentType] = useState<string>("");
   const {t} = useTranslation();
   const {lastMessage} = useSocketEvent('celeryMessage');
   const {socket} = useSocket();
@@ -34,17 +41,36 @@ const NextBestActions = () => {
   useEffect(() => {
     if (lastMessage) {
       const payload: SocketPayload = JSON.parse(lastMessage?.payloadString);
-      console.log(payload)
+      
 
       const action: Action = {
         text: payload?.parameters?.text || "",
         actionId: payload?.parameters?.action_id || 0,
         state: ActionState.active,
-        createdAt: new Date().getTime()
+        createdAt: new Date().getTime(),
+        quickActions: payload?.parameters?.quickActions || [],
+        intentType: payload?.parameters?.intentType || "",
+        options: payload?.parameters?.options || []
       };
 
       if (payload?.type === "new_action") {
         setActions(prevState => [...prevState, action]);
+        console.log("action payload",actions);
+        // 根据 intentType 控制不同卡片的显示
+        const currentIntentType = payload?.parameters?.intentType;
+        setIntentType(currentIntentType);
+        
+        if (currentIntentType === "identified") {
+          setShowCallerIdentification(true); // 隐藏 Caller Identification
+          setShowCallerVerification(false); // 显示 Caller Verification
+        } else if (currentIntentType === "verified") {
+          setShowCallerIdentification(false); // 隐藏 Caller Identification
+          setShowCallerVerification(true); // 隐藏 Caller Verification
+        } else {
+          // 其他值时隐藏两个卡片，显示普通卡片
+          setShowCallerIdentification(false);
+          setShowCallerVerification(false);
+        }
       } else if (payload?.type === "session_started") {
         // trying to grab the session ID when receiving the session open message
         // we need this along with the agent id when sending an manual action on click message back to socketio
@@ -144,7 +170,15 @@ const NextBestActions = () => {
                   }}
                 >
                   {actions.map((action, id) =>
-                    <BestAction key={id} action={action} updateAction={updateAction} sendManualCompletion={sendManualCompletion}></BestAction>
+                    <BestAction 
+                      key={id} 
+                      action={action} 
+                      showCallerIdentification={showCallerIdentification}
+                      showCallerVerification={showCallerVerification}
+                      intentType={intentType}
+                      updateAction={updateAction} 
+                      sendManualCompletion={sendManualCompletion}
+                    />
                   )}
                   
                     {/* <BestAction updateAction={updateAction} sendManualCompletion={sendManualCompletion}></BestAction> */}
