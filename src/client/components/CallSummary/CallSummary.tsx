@@ -239,24 +239,6 @@ const CallSummary = () => {
                   </div>
                 </div>
               </div>
-              <div className="inline-flex justify-center items-center gap-2.5">
-                <div className="opacity-90 justify-center">
-                  <span className="text-Labels-Primary text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Actions Taken by Agent: </span>
-                  
-                  {ata.map((ataitem:any, id:any) =>(
-                  <div className="w-52 p-[5px] inline-flex justify-center items-center">
-                    <div className="flex-1 opacity-90 justify-center text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug">{ataitem ? ataitem : ""}</div>
-                  </div>
-                  ))}
-                </div>
-              </div>
-              {/* <div className="flex flex-col justify-start items-start w-full">
-                <div className="w-full p-[5px]">
-                  <div className="opacity-90 justify-center text-Labels-Primary text-sm font-normal font-['Loew_Riyadh_Air'] leading-snug">
-                    {summary ? parseSummary(summary) : (loading ? <InlineLoading description={t("loadingSummary")} /> : null)}
-                  </div>
-                </div>                  
-              </div> */}
                 
               </div>
               {summary && (
