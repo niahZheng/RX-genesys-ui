@@ -108,14 +108,14 @@ const BestAction = ({
   //   }
   // };
 
-  const confirmIdentify = (data:any, type: 'confirm' ) => {
-    if (type === 'confirm') setConfirmingIdentify(true);
+  const confirmIdentify = (data:any, type: 'identified' ) => {
+    if (type === 'identified') setConfirmingIdentify(true);
     const requestdata = {
       conversationid: data,
-      buttonType: "confirm"
+      buttonType: "identified"
     }
     socket.emit("callIdentification", requestdata, (response:any) => {
-      if (type === 'confirm') setConfirmingIdentify(false);
+      if (type === 'identified') setConfirmingIdentify(false);
       if (response.status === "success") {
         setCallerIdentified(true);
         setUnableToIdentify(false);
@@ -129,7 +129,7 @@ const BestAction = ({
   }
 
 
-  const unabletoIdentify = (data:any, type: 'unable') => {
+  const unabletoIdentify = (data:any, type: 'failed') => {
     setLoadingUnableIdentify(true);
     // setCallerIdentified(false);
     // setUnableToIdentify(true);
@@ -137,10 +137,10 @@ const BestAction = ({
     // setUnableToVerify(false);
     const requestdata = {
       conversationid: data,
-      buttonType: "unable"
+      buttonType: "failed"
     }
     socket.emit("callIdentification", requestdata, (response:any) => {
-      if (type === 'unable') setLoadingUnableIdentify(false);
+      if (type === 'failed') setLoadingUnableIdentify(false);
       if (response.status === "success") {
         setCallerIdentified(false);
         setUnableToIdentify(true);
@@ -152,14 +152,14 @@ const BestAction = ({
     });
   }
 
-  const confirmVerify = (data:any, type: 'confirm' ) => {
-    if (type === 'confirm') setConfirmingVerify(true);
+  const confirmVerify = (data:any, type: 'verified' ) => {
+    if (type === 'verified') setConfirmingVerify(true);
     const requestdata = {
       conversationid: data,
-      buttonType: "confirm"
+      buttonType: "verified"
     }
     socket.emit("callValidation", data, (response:any) => {
-      if (type === 'confirm') setConfirmingVerify(false);
+      if (type === 'verified') setConfirmingVerify(false);
       if (response.status === "success") {
         setCallerIdentified(false);
         setUnableToIdentify(false);
@@ -173,7 +173,7 @@ const BestAction = ({
   }
 
 
-  const unabletoVerify = (data:any, type: 'unable') => {
+  const unabletoVerify = (data:any, type: 'failed') => {
     setLoadingUnableVerify(true);
     // setCallerIdentified(false);
     // setUnableToIdentify(false);
@@ -181,10 +181,10 @@ const BestAction = ({
     // setUnableToVerify(true);
     const requestdata = {
       conversationid: data,   //data 是conversationid
-      buttonType: "unable"
+      buttonType: "failed"
     }
     socket.emit("callIdentification", requestdata, (response:any) => {
-      if (type === 'unable') setLoadingUnableVerify(false);
+      setLoadingUnableVerify(false);
       if (response.status === "success") {
         setCallerIdentified(false);
         setUnableToIdentify(false);
@@ -224,13 +224,13 @@ const BestAction = ({
           </div>
           <div>
             <button className={`self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border text-xs mb-2 ${confirmingIdentify ? 'opacity-50 bg-[#EDECEE] text-black' : 'bg-[#240852] text-white'}`}
-            onClick={() => confirmIdentify(conversationid, 'confirm')}
+            onClick={() => confirmIdentify(conversationid, 'identified')}
             disabled={confirmingIdentify || loadingUnableIdentify}
             >
               {confirmingIdentify ? 'Confirming' : 'Confirm Identity'}
             </button>
             <button className={`self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border  text-xs ${loadingUnableIdentify ? 'opacity-50 bg-[#EDECEE]' : 'bg-white'}`}
-            onClick={() => unabletoIdentify(conversationid, 'unable')}
+            onClick={() => unabletoIdentify(conversationid, 'failed')}
             disabled={loadingUnableIdentify || confirmingIdentify}
             >
               {loadingUnableIdentify ? 'Loading' : 'Unable to Identify'}
@@ -267,13 +267,13 @@ const BestAction = ({
             </div>
             <div>
             <button className={`self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border text-xs mb-2 ${confirmingVerify ? 'opacity-50 bg-[#EDECEE] text-black' : 'bg-[#240852] text-white'}`}
-            onClick={() => confirmVerify(conversationid, 'confirm')}
+            onClick={() => confirmVerify(conversationid, 'verified')}
             disabled={confirmingVerify || loadingUnableVerify}
             >
               {confirmingVerify ? 'Confirming' : 'Confirm Verification'}
             </button>
             <button className={`self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border  text-xs ${loadingUnableVerify ? 'opacity-50 bg-[#EDECEE]' : 'bg-white'}`}
-            onClick={() => unabletoVerify(conversationid, 'unable')}
+            onClick={() => unabletoVerify(conversationid, 'failed')}
             disabled={loadingUnableVerify || confirmingVerify}
             >
               {loadingUnableVerify ? 'Loading' : 'Unable to Verification'}
