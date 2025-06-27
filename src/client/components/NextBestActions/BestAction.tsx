@@ -40,6 +40,12 @@ const BestAction = ({
   const [loadingUnableIdentify, setLoadingUnableIdentify] = useState(false);
   const [confirmingVerify, setConfirmingVerify] = useState(false);
   const [loadingUnableVerify, setLoadingUnableVerify] = useState(false);
+  const [callerIdentified, setCallerIdentified] = useState(false);
+  const [unableToIdentify, setUnableToIdentify] = useState(false);
+  const [callerVerified, setCallerVerified] = useState(false);
+  const [unableToVerify, setUnableToVerify] = useState(false);
+  const [hideCallerIdentification, setHideCallerIdentification] = useState(false);
+  const [hideCallerVerification, setHideCallerVerification] = useState(false);
 
   const conversationid = new URLSearchParams(window.location.search).get('conversationid') || 'undefined';
 
@@ -102,37 +108,97 @@ const BestAction = ({
   //   }
   // };
 
-  const confirmIdentify = (data:any, type: 'confirm' | 'unable') => {
+  const confirmIdentify = (data:any, type: 'confirm' ) => {
     if (type === 'confirm') setConfirmingIdentify(true);
-    if (type === 'unable') setLoadingUnableIdentify(true);
-    socket.emit("callIdentification", data, (response:any) => {
+    const requestdata = {
+      conversationid: data,
+      buttonType: "confirm"
+    }
+    socket.emit("callIdentification", requestdata, (response:any) => {
       if (type === 'confirm') setConfirmingIdentify(false);
-      if (type === 'unable') setLoadingUnableIdentify(false);
       if (response.status === "success") {
-        console.log("成功：", response.message);
+        setCallerIdentified(true);
+        setUnableToIdentify(false);
+        setCallerVerified(false);
+        setUnableToVerify(false);
+        setHideCallerIdentification(true);
       } else {
-        console.error("失败：", response.message);
+        alert('Confirm Identity failed: ' + (response.message || 'Unknown error'));
       }
     });
   }
 
-  const confirmVerify = (data:any, type: 'confirm' | 'unable') => {
+
+  const unabletoIdentify = (data:any, type: 'unable') => {
+    setLoadingUnableIdentify(true);
+    // setCallerIdentified(false);
+    // setUnableToIdentify(true);
+    // setCallerVerified(false);
+    // setUnableToVerify(false);
+    const requestdata = {
+      conversationid: data,
+      buttonType: "unable"
+    }
+    socket.emit("callIdentification", requestdata, (response:any) => {
+      if (type === 'unable') setLoadingUnableIdentify(false);
+      if (response.status === "success") {
+        setCallerIdentified(false);
+        setUnableToIdentify(true);
+        setCallerVerified(false);
+        setUnableToVerify(false);
+      } else {
+        alert('Unable to Identify failed: ' + (response.message || 'Unknown error'));
+      }
+    });
+  }
+
+  const confirmVerify = (data:any, type: 'confirm' ) => {
     if (type === 'confirm') setConfirmingVerify(true);
-    if (type === 'unable') setLoadingUnableVerify(true);
+    const requestdata = {
+      conversationid: data,
+      buttonType: "confirm"
+    }
     socket.emit("callValidation", data, (response:any) => {
       if (type === 'confirm') setConfirmingVerify(false);
+      if (response.status === "success") {
+        setCallerIdentified(false);
+        setUnableToIdentify(false);
+        setCallerVerified(true);
+        setUnableToVerify(false);
+        setHideCallerVerification(true);
+      } else {
+        alert('Confirm Verification failed: ' + (response.message || 'Unknown error'));
+      }
+    });
+  }
+
+
+  const unabletoVerify = (data:any, type: 'unable') => {
+    setLoadingUnableVerify(true);
+    // setCallerIdentified(false);
+    // setUnableToIdentify(false);
+    // setCallerVerified(false);
+    // setUnableToVerify(true);
+    const requestdata = {
+      conversationid: data,   //data 是conversationid
+      buttonType: "unable"
+    }
+    socket.emit("callIdentification", requestdata, (response:any) => {
       if (type === 'unable') setLoadingUnableVerify(false);
       if (response.status === "success") {
-        console.log("成功：", response.message);
+        setCallerIdentified(false);
+        setUnableToIdentify(false);
+        setCallerVerified(false);
+        setUnableToVerify(true);
       } else {
-        console.error("失败：", response.message);
+        alert('Unable to Verify failed: ' + (response.message || 'Unknown error'));
       }
     });
   }
 
   return (
     <div className="flex flex-col justify-start items-center gap-2.5 overflow-hidden">
-      {showCallerIdentification  && (
+      {showCallerIdentification && !hideCallerIdentification && (
         <div
           className="w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2 border-[#767692]"
         >
@@ -164,7 +230,7 @@ const BestAction = ({
               {confirmingIdentify ? 'Confirming' : 'Confirm Identity'}
             </button>
             <button className={`self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border  text-xs ${loadingUnableIdentify ? 'opacity-50 bg-[#EDECEE]' : 'bg-white'}`}
-            onClick={() => confirmIdentify(conversationid, 'unable')}
+            onClick={() => unabletoIdentify(conversationid, 'unable')}
             disabled={loadingUnableIdentify || confirmingIdentify}
             >
               {loadingUnableIdentify ? 'Loading' : 'Unable to Identify'}
@@ -172,7 +238,7 @@ const BestAction = ({
           </div>
         </div>
       )}
-      {showCallerVerification && (
+      {showCallerVerification && !hideCallerVerification && (
         <div>
           <div
             className="w-[214px] self-stretch min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2"
@@ -207,7 +273,7 @@ const BestAction = ({
               {confirmingVerify ? 'Confirming' : 'Confirm Verification'}
             </button>
             <button className={`self-stretch w-full m-w-24 px-6 py-2 rounded-3xl justify-start items-center gap-4 border  text-xs ${loadingUnableVerify ? 'opacity-50 bg-[#EDECEE]' : 'bg-white'}`}
-            onClick={() => confirmVerify(conversationid, 'unable')}
+            onClick={() => unabletoVerify(conversationid, 'unable')}
             disabled={loadingUnableVerify || confirmingVerify}
             >
               {loadingUnableVerify ? 'Loading' : 'Unable to Verification'}
@@ -217,6 +283,7 @@ const BestAction = ({
         </div>
       )}
       {/* {intentType === "identified" && ( */}
+      {callerIdentified && (
       <div>
         <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-emerald-300 inline-flex flex-col justify-start items-end gap-2">
           <div className="self-stretch inline-flex justify-start items-start gap-1">
@@ -229,8 +296,10 @@ const BestAction = ({
           </div>
         </div>
       </div>
+      )}
       {/* )} */}
       {/* {intentType === "verified" && ( */}
+      {callerVerified && (
       <div>
         <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-emerald-300 inline-flex flex-col justify-start items-end gap-2">
           <div className="self-stretch inline-flex justify-start items-start gap-1">
@@ -243,31 +312,36 @@ const BestAction = ({
           </div>
         </div>
       </div>
+      )}
       {/* )} */}
+      {unableToIdentify && (
       <div>
         <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-red-300 inline-flex flex-col justify-start items-end gap-2">
           <div className="self-stretch inline-flex justify-start items-start gap-1">
             <div className="flex-1 flex justify-center items-center gap-2.5">
               <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
-                <MisuseOutline style={{color:"#E97075"}}/>
+                <MisuseOutline style={{color:'#E97075'}}/>
               </div>
               <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Unable to Identify</div>
             </div>
           </div>
         </div>
       </div>
+      )}
+      {unableToVerify && (
       <div>
       <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-red-300 inline-flex flex-col justify-start items-end gap-2">
           <div className="self-stretch inline-flex justify-start items-start gap-1">
             <div className="flex-1 flex justify-center items-center gap-2.5">
               <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
-                <MisuseOutline style={{color:"#E97075"}}/>
+                <MisuseOutline style={{color:'#E97075'}}/>
               </div>
               <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Unable to Verify</div>
             </div>
           </div>
         </div>
       </div>
+      )}
       {intentType !== "verified" && intentType !== "identified" &&(
       <div>
         <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2">
