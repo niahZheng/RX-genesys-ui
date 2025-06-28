@@ -198,7 +198,8 @@ const BestAction = ({
 
   return (
     <div className="flex flex-col justify-start items-center gap-2.5 overflow-hidden">
-      {showCallerIdentification && !hideCallerIdentification && (
+      {/* {showCallerIdentification && !hideCallerIdentification && ( */}
+      { !hideCallerIdentification && (
         <div
           className="w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2 border-[#767692]"
         >
@@ -238,7 +239,8 @@ const BestAction = ({
           </div>
         </div>
       )}
-      {showCallerVerification && !hideCallerVerification && (
+      {/* {showCallerVerification && !hideCallerVerification && ( */}
+      { !hideCallerVerification && (
         <div>
           <div
             className="w-[214px] self-stretch min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2"
@@ -342,7 +344,7 @@ const BestAction = ({
         </div>
       </div>
       )}
-      {intentType !== "verified" && intentType !== "identified" &&(
+      {intentType !== "verify" && intentType !== "identify" &&(
       <div>
         <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2">
           <div className="self-stretch inline-flex justify-start items-start gap-1">
