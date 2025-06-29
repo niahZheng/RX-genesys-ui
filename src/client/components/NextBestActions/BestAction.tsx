@@ -18,14 +18,14 @@ type ActionOptions = {
 };
 
 const BestAction = ({
-  action,
+  // action,
   updateAction,
   sendManualCompletion,
   showCallerIdentification,
   showCallerVerification,
   intentType,
 }: {
-  action: Action;
+  // action: Action;
   updateAction: (action: Action) => void;
   sendManualCompletion: () => void;
   showCallerIdentification: boolean;
@@ -350,7 +350,8 @@ const BestAction = ({
           <div className="self-stretch inline-flex justify-start items-start gap-1">
             <div className="flex-1 flex justify-center items-center gap-2.5">
               <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">
-                {intentType}
+                {/* {intentType} */}
+                test
               </div>
             </div>
             <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
@@ -369,13 +370,13 @@ const BestAction = ({
               <div className="self-stretch justify-start">
                 <span className="text-Text-Dark text-xs font-normal font-['Loew_Riyadh_Air'] leading-none">Provide:<br/></span>
                 {/* 渲染 quickActions 有序列表 */}
-                {Array.isArray(action.quickActions) && action.quickActions.length > 0 && (
+                {/* {Array.isArray(action.quickActions) && action.quickActions.length > 0 && (
                   <ol className="list-decimal pl-4 text-Text-Dark text-xs font-normal">
                     {action.quickActions.map((item: string, idx: number) => (
                       <li key={idx}>{item}</li>
                     ))}
                   </ol>
-                )}
+                )} */}
               </div>
             </div>
           )}          
