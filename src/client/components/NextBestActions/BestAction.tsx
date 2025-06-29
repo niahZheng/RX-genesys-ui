@@ -345,43 +345,45 @@ const BestAction = ({
       </div>
       )}
       {intentType !== "verify" && intentType !== "identify" &&(
-      <div>
-        <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2">
-          <div className="self-stretch inline-flex justify-start items-start gap-1">
-            <div className="flex-1 flex justify-center items-center gap-2.5">
-              <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">
-                {/* {intentType} */}
-                test
-              </div>
-            </div>
-            <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
-              <div 
-                className={`accordion-arrow transform transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
-                onClick={() => setExpanded(!expanded)}
-              >
-                <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M4.94 5.72668L8 8.78002L11.06 5.72668L12 6.66668L8 10.6667L4 6.66668L4.94 5.72668Z" fill="#000000"/>
-                </svg>
-              </div>
-            </div>
-          </div>
-          {expanded && (
-            <div className="self-stretch flex flex-col justify-center items-center gap-2.5">
-              <div className="self-stretch justify-start">
-                <span className="text-Text-Dark text-xs font-normal font-['Loew_Riyadh_Air'] leading-none">Provide:<br/></span>
-                {/* 渲染 quickActions 有序列表 */}
-                {/* {Array.isArray(action.quickActions) && action.quickActions.length > 0 && (
-                  <ol className="list-decimal pl-4 text-Text-Dark text-xs font-normal">
-                    {action.quickActions.map((item: string, idx: number) => (
-                      <li key={idx}>{item}</li>
-                    ))}
-                  </ol>
-                )} */}
-              </div>
-            </div>
-          )}          
-      </div>
-    </div>)}
+        <div></div>
+    //   <div>
+    //     <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2">
+    //       <div className="self-stretch inline-flex justify-start items-start gap-1">
+    //         <div className="flex-1 flex justify-center items-center gap-2.5">
+    //           <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">
+    //             {intentType}
+    //             test
+    //           </div>
+    //         </div>
+    //         <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
+    //           <div 
+    //             className={`accordion-arrow transform transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
+    //             onClick={() => setExpanded(!expanded)}
+    //           >
+    //             <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    //               <path d="M4.94 5.72668L8 8.78002L11.06 5.72668L12 6.66668L8 10.6667L4 6.66668L4.94 5.72668Z" fill="#000000"/>
+    //             </svg>
+    //           </div>
+    //         </div>
+    //       </div>
+    //       {expanded && (
+    //         <div className="self-stretch flex flex-col justify-center items-center gap-2.5">
+    //           <div className="self-stretch justify-start">
+    //             <span className="text-Text-Dark text-xs font-normal font-['Loew_Riyadh_Air'] leading-none">Provide:<br/></span>
+    //             {/* 渲染 quickActions 有序列表 */}
+    //             {Array.isArray(action.quickActions) && action.quickActions.length > 0 && (
+    //               <ol className="list-decimal pl-4 text-Text-Dark text-xs font-normal">
+    //                 {action.quickActions.map((item: string, idx: number) => (
+    //                   <li key={idx}>{item}</li>
+    //                 ))}
+    //               </ol>
+    //             )}
+    //           </div>
+    //         </div>
+    //       )}          
+    //   </div>
+    // </div>
+  )}
     </div>
   );
 };
