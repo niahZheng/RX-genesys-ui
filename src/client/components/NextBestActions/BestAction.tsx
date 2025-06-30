@@ -18,14 +18,14 @@ type ActionOptions = {
 };
 
 const BestAction = ({
-  // action,
+  action,
   updateAction,
   sendManualCompletion,
   showCallerIdentification,
   showCallerVerification,
   intentType,
 }: {
-  // action: Action;
+  action: Action;
   updateAction: (action: Action) => void;
   sendManualCompletion: () => void;
   showCallerIdentification: boolean;
@@ -46,6 +46,7 @@ const BestAction = ({
   const [unableToVerify, setUnableToVerify] = useState(false);
   const [hideCallerIdentification, setHideCallerIdentification] = useState(false);
   const [hideCallerVerification, setHideCallerVerification] = useState(false);
+  const [statusCards, setStatusCards] = useState<{type: string, id: string}[]>([]);
 
   const conversationid = new URLSearchParams(window.location.search).get('conversationid') || 'undefined';
 
@@ -108,6 +109,10 @@ const BestAction = ({
   //   }
   // };
 
+  const addStatusCard = (type: string) => {
+    setStatusCards(prev => [...prev, { type, id: `${type}-${Date.now()}-${Math.random()}` }]);
+  };
+
   const confirmIdentify = (data:any, type: 'identified' ) => {
     if (type === 'identified') setConfirmingIdentify(true);
     const requestdata = {
@@ -117,11 +122,7 @@ const BestAction = ({
     socket.emit("callIdentification", requestdata, (response:any) => {
       if (type === 'identified') setConfirmingIdentify(false);
       if (response.status === "success") {
-        setCallerIdentified(true);
-        setUnableToIdentify(false);
-        setCallerVerified(false);
-        setUnableToVerify(false);
-        setHideCallerIdentification(true);
+        addStatusCard("callerIdentified");
       } else {
         alert('Confirm Identity failed: ' + (response.message || 'Unknown error'));
       }
@@ -131,10 +132,6 @@ const BestAction = ({
 
   const unabletoIdentify = (data:any, type: 'failed') => {
     setLoadingUnableIdentify(true);
-    // setCallerIdentified(false);
-    // setUnableToIdentify(true);
-    // setCallerVerified(false);
-    // setUnableToVerify(false);
     const requestdata = {
       conversationid: data,
       buttonType: "failed"
@@ -142,10 +139,7 @@ const BestAction = ({
     socket.emit("callIdentification", requestdata, (response:any) => {
       if (type === 'failed') setLoadingUnableIdentify(false);
       if (response.status === "success") {
-        setCallerIdentified(false);
-        setUnableToIdentify(true);
-        setCallerVerified(false);
-        setUnableToVerify(false);
+        addStatusCard("unableToIdentify");
       } else {
         alert('Unable to Identify failed: ' + (response.message || 'Unknown error'));
       }
@@ -161,11 +155,7 @@ const BestAction = ({
     socket.emit("callValidation", data, (response:any) => {
       if (type === 'verified') setConfirmingVerify(false);
       if (response.status === "success") {
-        setCallerIdentified(false);
-        setUnableToIdentify(false);
-        setCallerVerified(true);
-        setUnableToVerify(false);
-        setHideCallerVerification(true);
+        addStatusCard("callerVerified");
       } else {
         alert('Confirm Verification failed: ' + (response.message || 'Unknown error'));
       }
@@ -175,10 +165,6 @@ const BestAction = ({
 
   const unabletoVerify = (data:any, type: 'failed') => {
     setLoadingUnableVerify(true);
-    // setCallerIdentified(false);
-    // setUnableToIdentify(false);
-    // setCallerVerified(false);
-    // setUnableToVerify(true);
     const requestdata = {
       conversationid: data,   //data 是conversationid
       buttonType: "failed"
@@ -186,10 +172,7 @@ const BestAction = ({
     socket.emit("callIdentification", requestdata, (response:any) => {
       setLoadingUnableVerify(false);
       if (response.status === "success") {
-        setCallerIdentified(false);
-        setUnableToIdentify(false);
-        setCallerVerified(false);
-        setUnableToVerify(true);
+        addStatusCard("unableToVerify");
       } else {
         alert('Unable to Verify failed: ' + (response.message || 'Unknown error'));
       }
@@ -198,8 +181,8 @@ const BestAction = ({
 
   return (
     <div className="flex flex-col justify-start items-center gap-2.5 overflow-hidden">
-      {/* {showCallerIdentification && !hideCallerIdentification && ( */}
-      { !hideCallerIdentification && (
+      {showCallerIdentification && !hideCallerIdentification && (
+      // { !hideCallerIdentification && (
         <div
           className="w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2 border-[#767692]"
         >
@@ -239,8 +222,8 @@ const BestAction = ({
           </div>
         </div>
       )}
-      {/* {showCallerVerification && !hideCallerVerification && ( */}
-      { !hideCallerVerification && (
+      {showCallerVerification && !hideCallerVerification && (
+      // { !hideCallerVerification && (
         <div>
           <div
             className="w-[214px] self-stretch min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2"
@@ -284,105 +267,104 @@ const BestAction = ({
           </div>
         </div>
       )}
-      {/* {intentType === "identified" && ( */}
-      {callerIdentified && (
-      <div>
-        <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-emerald-300 inline-flex flex-col justify-start items-end gap-2">
-          <div className="self-stretch inline-flex justify-start items-start gap-1">
-            <div className="flex-1 flex justify-center items-center gap-2.5">
-              <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
-                <CheckmarkOutline style={{ color: '#71CDA2' }} />
+      {/* 渲染所有已生成的状态卡片 */}
+      {statusCards.map(card => {
+        if (card.type === "callerIdentified") {
+          return (
+            <div key={card.id} className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-emerald-300 inline-flex flex-col justify-start items-end gap-2">
+              <div className="self-stretch inline-flex justify-start items-start gap-1">
+                <div className="flex-1 flex justify-center items-center gap-2.5">
+                  <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
+                    <CheckmarkOutline style={{ color: '#71CDA2' }} />
+                  </div>
+                  <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Caller identified</div>
+                </div>
               </div>
-              <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Caller identified</div>
             </div>
-          </div>
-        </div>
-      </div>
-      )}
-      {/* )} */}
-      {/* {intentType === "verified" && ( */}
-      {callerVerified && (
-      <div>
-        <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-emerald-300 inline-flex flex-col justify-start items-end gap-2">
-          <div className="self-stretch inline-flex justify-start items-start gap-1">
-            <div className="flex-1 flex justify-center items-center gap-2.5">
-              <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
-                <CheckmarkOutline style={{ color: '#71CDA2' }} />
+          );
+        }
+        if (card.type === "unableToIdentify") {
+          return (
+            <div key={card.id} className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-red-300 inline-flex flex-col justify-start items-end gap-2">
+              <div className="self-stretch inline-flex justify-start items-start gap-1">
+                <div className="flex-1 flex justify-center items-center gap-2.5">
+                  <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
+                    <MisuseOutline style={{color:'#E97075'}}/>
+                  </div>
+                  <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Unable to Identify</div>
+                </div>
               </div>
-              <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Caller Verified</div>
             </div>
-          </div>
-        </div>
-      </div>
-      )}
-      {/* )} */}
-      {unableToIdentify && (
-      <div>
-        <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-red-300 inline-flex flex-col justify-start items-end gap-2">
-          <div className="self-stretch inline-flex justify-start items-start gap-1">
-            <div className="flex-1 flex justify-center items-center gap-2.5">
-              <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
-                <MisuseOutline style={{color:'#E97075'}}/>
+          );
+        }
+        if (card.type === "callerVerified") {
+          return (
+            <div key={card.id} className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-emerald-300 inline-flex flex-col justify-start items-end gap-2">
+              <div className="self-stretch inline-flex justify-start items-start gap-1">
+                <div className="flex-1 flex justify-center items-center gap-2.5">
+                  <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
+                    <CheckmarkOutline style={{ color: '#71CDA2' }} />
+                  </div>
+                  <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Caller Verified</div>
+                </div>
               </div>
-              <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Unable to Identify</div>
             </div>
-          </div>
-        </div>
-      </div>
-      )}
-      {unableToVerify && (
-      <div>
-      <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-red-300 inline-flex flex-col justify-start items-end gap-2">
-          <div className="self-stretch inline-flex justify-start items-start gap-1">
-            <div className="flex-1 flex justify-center items-center gap-2.5">
-              <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
-                <MisuseOutline style={{color:'#E97075'}}/>
+          );
+        }
+        if (card.type === "unableToVerify") {
+          return (
+            <div key={card.id} className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-red-300 inline-flex flex-col justify-start items-end gap-2">
+              <div className="self-stretch inline-flex justify-start items-start gap-1">
+                <div className="flex-1 flex justify-center items-center gap-2.5">
+                  <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
+                    <MisuseOutline style={{color:'#E97075'}}/>
+                  </div>
+                  <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Unable to Verify</div>
+                </div>
               </div>
-              <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">Unable to Verify</div>
             </div>
-          </div>
-        </div>
-      </div>
-      )}
+          );
+        }
+        return null;
+      })}
       {intentType !== "verify" && intentType !== "identify" &&(
-        <div></div>
-    //   <div>
-    //     <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2">
-    //       <div className="self-stretch inline-flex justify-start items-start gap-1">
-    //         <div className="flex-1 flex justify-center items-center gap-2.5">
-    //           <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">
-    //             {intentType}
-    //             test
-    //           </div>
-    //         </div>
-    //         <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
-    //           <div 
-    //             className={`accordion-arrow transform transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
-    //             onClick={() => setExpanded(!expanded)}
-    //           >
-    //             <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    //               <path d="M4.94 5.72668L8 8.78002L11.06 5.72668L12 6.66668L8 10.6667L4 6.66668L4.94 5.72668Z" fill="#000000"/>
-    //             </svg>
-    //           </div>
-    //         </div>
-    //       </div>
-    //       {expanded && (
-    //         <div className="self-stretch flex flex-col justify-center items-center gap-2.5">
-    //           <div className="self-stretch justify-start">
-    //             <span className="text-Text-Dark text-xs font-normal font-['Loew_Riyadh_Air'] leading-none">Provide:<br/></span>
-    //             {/* 渲染 quickActions 有序列表 */}
-    //             {Array.isArray(action.quickActions) && action.quickActions.length > 0 && (
-    //               <ol className="list-decimal pl-4 text-Text-Dark text-xs font-normal">
-    //                 {action.quickActions.map((item: string, idx: number) => (
-    //                   <li key={idx}>{item}</li>
-    //                 ))}
-    //               </ol>
-    //             )}
-    //           </div>
-    //         </div>
-    //       )}          
-    //   </div>
-    // </div>
+      <div>
+        <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2">
+          <div className="self-stretch inline-flex justify-start items-start gap-1">
+            <div className="flex-1 flex justify-center items-center gap-2.5">
+              <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">
+                {intentType}
+                test
+              </div>
+            </div>
+            <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
+              <div 
+                className={`accordion-arrow transform transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
+                onClick={() => setExpanded(!expanded)}
+              >
+                <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4.94 5.72668L8 8.78002L11.06 5.72668L12 6.66668L8 10.6667L4 6.66668L4.94 5.72668Z" fill="#000000"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          {expanded && (
+            <div className="self-stretch flex flex-col justify-center items-center gap-2.5">
+              <div className="self-stretch justify-start">
+                <span className="text-Text-Dark text-xs font-normal font-['Loew_Riyadh_Air'] leading-none">Provide:<br/></span>
+                {/* 渲染 quickActions 有序列表 */}
+                {Array.isArray(action.quickActions) && action.quickActions.length > 0 && (
+                  <ol className="list-decimal pl-4 text-Text-Dark text-xs font-normal">
+                    {action.quickActions.map((item: string, idx: number) => (
+                      <li key={idx}>{item}</li>
+                    ))}
+                  </ol>
+                )}
+              </div>
+            </div>
+          )}          
+      </div>
+    </div>
   )}
     </div>
   );

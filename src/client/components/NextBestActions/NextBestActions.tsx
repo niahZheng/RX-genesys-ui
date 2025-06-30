@@ -158,7 +158,7 @@ const NextBestActions = () => {
               msOverflowStyle: 'none',
               WebkitOverflowScrolling: 'touch'
             }}>
-              {/* {actions.length > 0 && ( */}
+              {actions.length > 0 && (
                 <div 
                   ref={scrollRef}
                   className="overflow-y-auto scrollbar-hide"
@@ -169,23 +169,22 @@ const NextBestActions = () => {
                     WebkitOverflowScrolling: 'touch'
                   }}
                 >
-                  {/* {actions.map((action, id) => */}
+                  {actions.map((action, id) =>
                     <BestAction 
-                      // key={id} 
-                      // action={action} 
-                      key={1} 
+                      key={id} 
+                      action={action} 
                       showCallerIdentification={showCallerIdentification}
                       showCallerVerification={showCallerVerification}
                       intentType={intentType}
                       updateAction={updateAction} 
                       sendManualCompletion={sendManualCompletion}
                     />
-                  {/* )} */}
+                  )}
                   
                     {/* <BestAction updateAction={updateAction} sendManualCompletion={sendManualCompletion}></BestAction> */}
                   
                 </div>
-               {/* )} */}
+               )}
               {actions.length === 0 && <InlineLoading description={t("loadingAction")}/>}
             </div>
             <div className="flex justify-center items-center w-full py-4 border-t border-gray-100 bg-white">
