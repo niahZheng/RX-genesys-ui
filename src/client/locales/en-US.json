@@ -1,0 +1,16 @@
+{
+  "hello": "Hello",
+  "loadingSummary": "Loading summary...",
+  "loadingAction": "Loading action...",
+  "generateSummary": "Generate Summary",
+  "copy": "Copy",
+  "summaryCopied": "Summary copied.",
+  "start": "Start",
+  "end": "End",
+  "duration": "Duration",
+  "initialRequest": "Initial Request",
+  "requestedChanges": "Requested Changes",
+  "actionsTaken": "Actions Taken by Agent",
+  "timeout": "Timeout",
+  "generateSummaryTimeout": "Generate summary timeout."
+} 

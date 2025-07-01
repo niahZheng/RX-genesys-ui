@@ -261,7 +261,7 @@ const BestAction = ({
             onClick={() => unabletoVerify(conversationid, 'failed')}
             disabled={loadingUnableVerify || confirmingVerify}
             >
-              {loadingUnableVerify ? 'Loading' : 'Unable to Verification'}
+              {loadingUnableVerify ? 'Loading' : 'Unable to Verify'}
             </button>
             </div>
           </div>
@@ -271,6 +271,7 @@ const BestAction = ({
       {statusCards.map(card => {
         if (card.type === "callerIdentified") {
           return (
+          <div>
             <div key={card.id} className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-emerald-300 inline-flex flex-col justify-start items-end gap-2">
               <div className="self-stretch inline-flex justify-start items-start gap-1">
                 <div className="flex-1 flex justify-center items-center gap-2.5">
@@ -281,10 +282,12 @@ const BestAction = ({
                 </div>
               </div>
             </div>
+          </div>
           );
         }
         if (card.type === "unableToIdentify") {
           return (
+          <div>
             <div key={card.id} className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-red-300 inline-flex flex-col justify-start items-end gap-2">
               <div className="self-stretch inline-flex justify-start items-start gap-1">
                 <div className="flex-1 flex justify-center items-center gap-2.5">
@@ -295,10 +298,12 @@ const BestAction = ({
                 </div>
               </div>
             </div>
+          </div>
           );
         }
         if (card.type === "callerVerified") {
           return (
+          <div>
             <div key={card.id} className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-emerald-300 inline-flex flex-col justify-start items-end gap-2">
               <div className="self-stretch inline-flex justify-start items-start gap-1">
                 <div className="flex-1 flex justify-center items-center gap-2.5">
@@ -309,10 +314,12 @@ const BestAction = ({
                 </div>
               </div>
             </div>
+          </div>
           );
         }
         if (card.type === "unableToVerify") {
           return (
+          <div>
             <div key={card.id} className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-red-300 inline-flex flex-col justify-start items-end gap-2">
               <div className="self-stretch inline-flex justify-start items-start gap-1">
                 <div className="flex-1 flex justify-center items-center gap-2.5">
@@ -323,6 +330,7 @@ const BestAction = ({
                 </div>
               </div>
             </div>
+          </div>
           );
         }
         return null;
