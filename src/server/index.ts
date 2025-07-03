@@ -8,6 +8,7 @@ import setupTelemetry from "@server/telemetry";
 import setupEnvironment from "@server/routes/environment";
 import setupAuth from "@server/auth";
 
+// const PORT = process.env.PORT || process.env.DEFAULT_SERVER_LISTEN_PORT || 3000;
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 const ENABLE_AUTH = process.env.ENABLE_AUTH === "true";
 const ANN_WRAPPER_DASHBOARD = process.env.ANN_WRAPPER_DASHBOARD || 'http://localhost:3003'

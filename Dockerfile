@@ -22,6 +22,6 @@ COPY --from=build /agent-dashboard/node_modules ./node_modules
 
 COPY --from=build /agent-dashboard/package.json ./
 
-EXPOSE 3000
+EXPOSE 443
 
 CMD ["node", "--max-old-space-size=4096", "dist/server/index.js"]
