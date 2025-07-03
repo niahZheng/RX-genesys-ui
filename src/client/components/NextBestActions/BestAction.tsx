@@ -342,7 +342,6 @@ const BestAction = ({
             <div className="flex-1 flex justify-center items-center gap-2.5">
               <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">
                 {intentType}
-                test
               </div>
             </div>
             <div className="w-6 h-6 flex justify-end items-center overflow-hidden">
