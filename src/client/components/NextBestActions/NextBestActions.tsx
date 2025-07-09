@@ -60,10 +60,10 @@ const NextBestActions = () => {
         const currentIntentType = payload?.parameters?.intentType;
         setIntentType(currentIntentType);
         
-        if (currentIntentType === "identify") {
+        if (currentIntentType === "Guest Identification") {
           setShowCallerIdentification(true); // 隐藏 Caller Identification
           setShowCallerVerification(false); // 显示 Caller Verification
-        } else if (currentIntentType === "verify") {
+        } else if (currentIntentType === "Guest Verification") {
           setShowCallerIdentification(false); // 隐藏 Caller Identification
           setShowCallerVerification(true); // 隐藏 Caller Verification
         } else {

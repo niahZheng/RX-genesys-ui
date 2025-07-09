@@ -335,7 +335,7 @@ const BestAction = ({
         }
         return null;
       })}
-      {intentType !== "verify" && intentType !== "identify" &&(
+      {intentType !== "Guest Verification" && intentType !== "Guest Identification" &&(
       <div>
         <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2">
           <div className="self-stretch inline-flex justify-start items-start gap-1">
