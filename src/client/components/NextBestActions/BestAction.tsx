@@ -21,16 +21,10 @@ const BestAction = ({
   action,
   updateAction,
   sendManualCompletion,
-  showCallerIdentification,
-  showCallerVerification,
-  intentType,
 }: {
   action: Action;
   updateAction: (action: Action) => void;
   sendManualCompletion: () => void;
-  showCallerIdentification: boolean;
-  showCallerVerification: boolean;
-  intentType: string;
 }) => {
   const { t } = useTranslation();
   const { socket } = useSocket();
@@ -123,6 +117,7 @@ const BestAction = ({
       if (type === 'identified') setConfirmingIdentify(false);
       if (response.status === "success") {
         addStatusCard("callerIdentified");
+        setHideCallerIdentification(true); // 成功后隐藏 Caller Identification 卡片
       } else {
         alert('Confirm Identity failed: ' + (response.message || 'Unknown error'));
       }
@@ -140,6 +135,7 @@ const BestAction = ({
       if (type === 'failed') setLoadingUnableIdentify(false);
       if (response.status === "success") {
         addStatusCard("unableToIdentify");
+        setHideCallerIdentification(true); // 成功后隐藏 Caller Identification 卡片
       } else {
         alert('Unable to Identify failed: ' + (response.message || 'Unknown error'));
       }
@@ -152,10 +148,11 @@ const BestAction = ({
       conversationid: data,
       buttonType: "verified"
     }
-    socket.emit("callValidation", data, (response:any) => {
+    socket.emit("callValidation", requestdata, (response:any) => {
       if (type === 'verified') setConfirmingVerify(false);
       if (response.status === "success") {
         addStatusCard("callerVerified");
+        setHideCallerVerification(true); // 成功后隐藏 Caller Verification 卡片
       } else {
         alert('Confirm Verification failed: ' + (response.message || 'Unknown error'));
       }
@@ -169,10 +166,11 @@ const BestAction = ({
       conversationid: data,   //data 是conversationid
       buttonType: "failed"
     }
-    socket.emit("callIdentification", requestdata, (response:any) => {
+    socket.emit("callValidation", requestdata, (response:any) => {
       setLoadingUnableVerify(false);
       if (response.status === "success") {
         addStatusCard("unableToVerify");
+        setHideCallerVerification(true); // 成功后隐藏 Caller Verification 卡片
       } else {
         alert('Unable to Verify failed: ' + (response.message || 'Unknown error'));
       }
@@ -181,7 +179,7 @@ const BestAction = ({
 
   return (
     <div className="flex flex-col justify-start items-center gap-2.5 overflow-hidden">
-      {showCallerIdentification && !hideCallerIdentification && (
+      {action.intentType === "Guest Identification" && !hideCallerIdentification && (
       // { !hideCallerIdentification && (
         <div
           className="w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2 border-[#767692]"
@@ -222,7 +220,7 @@ const BestAction = ({
           </div>
         </div>
       )}
-      {showCallerVerification && !hideCallerVerification && (
+      {action.intentType === "Guest Verification" && !hideCallerVerification && (
       // { !hideCallerVerification && (
         <div>
           <div
@@ -335,13 +333,13 @@ const BestAction = ({
         }
         return null;
       })}
-      {intentType !== "Guest Verification" && intentType !== "Guest Identification" &&(
+      {action.intentType !== "Guest Verification" && action.intentType !== "Guest Identification" &&(
       <div>
         <div className="self-stretch w-[214px] min-w-48 p-4 bg-Surface-Card rounded-xl outline outline-1 outline-offset-[-1px] outline-Border-Border-3 inline-flex flex-col justify-start items-end gap-2">
           <div className="self-stretch inline-flex justify-start items-start gap-1">
             <div className="flex-1 flex justify-center items-center gap-2.5">
               <div className="flex-1 justify-start text-Text-Dark text-sm font-bold font-['Loew_Riyadh_Air'] leading-snug">
-                {intentType}
+                {action.intentType}
               </div>
             </div>
             <div className="w-6 h-6 flex justify-end items-center overflow-hidden">

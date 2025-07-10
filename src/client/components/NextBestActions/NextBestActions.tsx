@@ -28,8 +28,6 @@ export type Action = {
 
 const NextBestActions = () => {
   const [actions, setActions] = useState<Action[]>([]);
-  const [showCallerIdentification, setShowCallerIdentification] = useState(true);
-  const [showCallerVerification, setShowCallerVerification] = useState(true);
   const [intentType, setIntentType] = useState<string>("");
   const {t} = useTranslation();
   const {lastMessage} = useSocketEvent('celeryMessage');
@@ -60,17 +58,6 @@ const NextBestActions = () => {
         const currentIntentType = payload?.parameters?.intentType;
         setIntentType(currentIntentType);
         
-        if (currentIntentType === "Guest Identification") {
-          setShowCallerIdentification(true); // 隐藏 Caller Identification
-          setShowCallerVerification(false); // 显示 Caller Verification
-        } else if (currentIntentType === "Guest Verification") {
-          setShowCallerIdentification(false); // 隐藏 Caller Identification
-          setShowCallerVerification(true); // 隐藏 Caller Verification
-        } else {
-          // 其他值时隐藏两个卡片，显示普通卡片
-          setShowCallerIdentification(false);
-          setShowCallerVerification(false);
-        }
       } else if (payload?.type === "session_started") {
         // trying to grab the session ID when receiving the session open message
         // we need this along with the agent id when sending an manual action on click message back to socketio
@@ -169,14 +156,11 @@ const NextBestActions = () => {
                     WebkitOverflowScrolling: 'touch'
                   }}
                 >
-                  {actions.map((action, id) =>
+                  {actions.map((action) =>
                     <BestAction 
-                      key={id} 
-                      action={action} 
-                      showCallerIdentification={showCallerIdentification}
-                      showCallerVerification={showCallerVerification}
-                      intentType={intentType}
-                      updateAction={updateAction} 
+                      key={action.actionId}
+                      action={action}
+                      updateAction={updateAction}
                       sendManualCompletion={sendManualCompletion}
                     />
                   )}
