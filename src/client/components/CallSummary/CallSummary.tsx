@@ -5,9 +5,10 @@ import {useEffect, useState, useRef} from "react";
 import {SocketPayload, useSocketEvent} from "@client/providers/Socket";
 import { InlineLoading, InlineNotification } from "@carbon/react";
 import { useAccordion } from "@client/context/AccordionContext";
-import { Copy } from "@carbon/icons-react";
+import { Copy, MisuseOutline, Warning } from "@carbon/icons-react";
 import { useSocket } from "@client/providers/Socket";
 import { array } from "fp-ts";
+import { v4 as uuid } from "uuid";
 
 const CallSummary = () => {
   const [summary, setSummary] = useState<any>("");
@@ -24,6 +25,7 @@ const CallSummary = () => {
   const [timeoutError, setTimeoutError] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [copied, setCopied] = useState(false);
+  const [errorCards, setErrorCards] = useState<{id: string, message: string}[]>([]);
 
   const handleCopy = () => {
     // 复制summary section中除按钮外的所有内容
@@ -46,11 +48,20 @@ const CallSummary = () => {
   const {socket} = useSocket();
   const requestSummary = (conversationId: any) => {
     setLoading(true);
-    setTimeoutError(false);
+    // setTimeoutError(false);
+    // setErrorCards(prev => [
+    //   ...prev,
+    //   { id: uuid(), message: "Summary request timeout. Please try again or contact support." }
+    // ]);
+    
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       setLoading(false);
-      setTimeoutError(true);
+      // setTimeoutError(true);
+      setErrorCards(prev => [
+        ...prev,
+        { id: uuid(), message: "Summary request timeout. Please try again or contact support." }
+      ]);
     }, 300000); // 5分钟
     const payload = {
       destination: `agent-assist/${conversationId}/ui`,
@@ -140,7 +151,6 @@ const CallSummary = () => {
   };
 
   return (
-    // <div className={widgetStyles.dashboardWidget}>
     <div
       className={`flex flex-col items-start shrink-0 rounded-xl bg-white mt-[20px] self-stretch gap-2.5 border border-solid border-gray-100 ${
         expandedSection === "callSummary" ? "h-[690px]" : "h-[63px]"
@@ -191,6 +201,42 @@ const CallSummary = () => {
             msOverflowStyle: 'auto',
             WebkitOverflowScrolling: 'touch'
           }}>
+      {/* 异常区：所有异常卡片紧密排列在顶部 */}
+      {errorCards.length > 0 && (
+        <div className="p-4 bg-Surface-Card inline-flex flex-col justify-center items-end gap-2">
+          <div className="flex flex-col w-full gap-2.5">
+            {errorCards.map(card => (
+              <div
+                key={card.id}
+                className="self-stretch min-w-48 px-4 py-2 bg-pink-50 outline outline-b-2 outline-red-400 inline-flex justify-center items-start gap-4"
+              >
+                <div className="flex-1 py-0.5 flex justify-center items-start gap-2.5">
+                  <div className="w-6 py-0.5 flex justify-start items-center gap-2.5">
+                    <div className="flex-1 inline-flex flex-col justify-center items-center gap-2.5">
+                    <Warning style={{color:'#E97075'}}/>
+                    </div>
+                  </div>
+                  <div className="flex-1 flex justify-start items-start gap-2">
+                    <div className="flex-1 justify-start text-black text-xs font-normal leading-none">
+                      {card.message}
+                    </div>
+                  </div>
+                </div>
+                <div className="py-2 flex justify-start items-center gap-2.5">
+                  <div className="w-4 flex justify-start items-center gap-3">
+                    <div
+                      className="w-4 h-4 relative overflow-hidden cursor-pointer"
+                      onClick={() => setErrorCards(prev => prev.filter(c => c.id !== card.id))}
+                    >
+                      <MisuseOutline style={{color:'#E97075'}}/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
             <div className="flex justify-center items-center w-full py-4 border-b border-gray-100 bg-white">
               <button 
                 className="w-[214px] px-6 py-2 rounded-3xl justify-center items-center gap-4 border bg-white text-xs hover:bg-gray-50 transition-colors"
