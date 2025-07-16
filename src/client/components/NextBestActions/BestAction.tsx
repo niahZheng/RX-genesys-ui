@@ -3,7 +3,7 @@ import { Button, ClickableTile, Tooltip } from "@carbon/react";
 import { useTranslation } from "react-i18next";
 import { v4 as uuid } from "uuid";
 import { Action, ActionState } from "./NextBestActions";
-import { Checkmark, CheckmarkOutline, CloseFilled, Hourglass, MisuseOutline, Result } from "@carbon/icons-react";
+import { Checkmark, CheckmarkOutline, CloseFilled, Hourglass, MisuseOutline, Result, Warning } from "@carbon/icons-react";
 import sanitizeHtml from "sanitize-html";
 import { useEffect, useState } from "react";
 import { useSocket } from "@client/providers/Socket";
@@ -21,10 +21,14 @@ const BestAction = ({
   action,
   updateAction,
   sendManualCompletion,
+  errorCards,
+  setErrorCards,
 }: {
   action: Action;
   updateAction: (action: Action) => void;
   sendManualCompletion: () => void;
+  errorCards: {id: string, message: string}[];
+  setErrorCards: React.Dispatch<React.SetStateAction<{id: string, message: string}[]>>;
 }) => {
   const { t } = useTranslation();
   const { socket } = useSocket();
@@ -109,6 +113,7 @@ const BestAction = ({
 
   const confirmIdentify = (data:any, type: 'identified' ) => {
     if (type === 'identified') setConfirmingIdentify(true);
+    //setErrorCards(prev => [...prev, {id: uuid(), message:  "Confirm Identity failed: Unknown error (Error Code 106)"}]);
     const requestdata = {
       conversationid: data,
       buttonType: "identified"
@@ -119,7 +124,7 @@ const BestAction = ({
         addStatusCard("callerIdentified");
         setHideCallerIdentification(true); // 成功后隐藏 Caller Identification 卡片
       } else {
-        alert('Confirm Identity failed: ' + (response.message || 'Unknown error'));
+        setErrorCards(prev => [...prev, {id: uuid(), message: response.message || "Confirm Identity failed: Unknown error (Error Code 106)"}]);
       }
     });
   }
@@ -137,13 +142,14 @@ const BestAction = ({
         addStatusCard("unableToIdentify");
         setHideCallerIdentification(true); // 成功后隐藏 Caller Identification 卡片
       } else {
-        alert('Unable to Identify failed: ' + (response.message || 'Unknown error'));
+        setErrorCards(prev => [...prev, {id: uuid(), message: response.message || "Unable to Identify failed: Unknown error (Error Code 106)"}]);
       }
     });
   }
 
   const confirmVerify = (data:any, type: 'verified' ) => {
     if (type === 'verified') setConfirmingVerify(true);
+    //setErrorCards(prev => [...prev, {id: uuid(), message:  "Confirm Identity failed: Unknown error (Error Code 106)"}]);
     const requestdata = {
       conversationid: data,
       buttonType: "verified"
@@ -154,7 +160,7 @@ const BestAction = ({
         addStatusCard("callerVerified");
         setHideCallerVerification(true); // 成功后隐藏 Caller Verification 卡片
       } else {
-        alert('Confirm Verification failed: ' + (response.message || 'Unknown error'));
+        setErrorCards(prev => [...prev, {id: uuid(), message: response.message || "Confirm Verification failed: Unknown error (Error Code 106)"}]);
       }
     });
   }
@@ -172,13 +178,15 @@ const BestAction = ({
         addStatusCard("unableToVerify");
         setHideCallerVerification(true); // 成功后隐藏 Caller Verification 卡片
       } else {
-        alert('Unable to Verify failed: ' + (response.message || 'Unknown error'));
+        setErrorCards(prev => [...prev, {id: uuid(), message: response.message || "Unable to Verify failed: Unknown error (Error Code 106)"}]);
       }
     });
   }
 
   return (
     <div className="flex flex-col justify-start items-center gap-2.5 overflow-hidden">
+      {/* 多个异常卡片始终在所有卡片最顶部 */}
+      {/* 删除本地 errorCards.map 渲染，异常区交由父组件渲染 */}
       {action.intentType === "Guest Identification" && !hideCallerIdentification && (
       // { !hideCallerIdentification && (
         <div

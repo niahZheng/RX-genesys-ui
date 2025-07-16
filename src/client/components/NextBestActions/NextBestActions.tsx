@@ -8,6 +8,7 @@ import * as _ from "lodash";
 import {Accordion, AccordionItem, InlineLoading} from "@carbon/react";
 import { useAccordion } from "@client/context/AccordionContext";
 import { array } from "fp-ts";
+import { Warning, MisuseOutline } from "@carbon/react/icons";
 
 export enum ActionState {
   active = "active",
@@ -36,6 +37,7 @@ const NextBestActions = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { expandedSection, setExpandedSection } = useAccordion();
   const conversationid = new URLSearchParams(window.location.search).get('conversationid') || 'undefined';
+  const [errorCards, setErrorCards] = useState<{id: string, message: string}[]>([]);
   useEffect(() => {
     if (lastMessage) {
       const payload: SocketPayload = JSON.parse(lastMessage?.payloadString);
@@ -140,6 +142,44 @@ const NextBestActions = () => {
         </div>
         {expandedSection === 'nextBestAction' && (
           <>
+            {/* 异常区：所有异常卡片紧密排列在顶部 */}
+            {errorCards.length > 0 && (
+            <div
+            className="p-4 bg-Surface-Card inline-flex flex-col justify-center items-end gap-2"
+            >
+              <div className="flex flex-col w-full gap-2.5">
+                {errorCards.map(card => (
+                  <div
+                    key={card.id}
+                    className="self-stretch min-w-48 px-4 py-2 bg-pink-50 outline outline-b-2 outline-red-400 inline-flex justify-center items-start gap-4"
+                  >
+                    <div className="flex-1 py-0.5 flex justify-center items-start gap-2.5">
+                      <div className="w-6 py-0.5 flex justify-start items-center gap-2.5">
+                        <div className="flex-1 inline-flex flex-col justify-center items-center gap-2.5">
+                          <Warning style={{color:'#E97075'}}/>
+                        </div>
+                      </div>
+                      <div className="flex-1 flex justify-start items-start gap-2">
+                        <div className="flex-1 justify-start text-black text-xs font-normal leading-none">
+                          {card.message}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="py-2 flex justify-start items-center gap-2.5">
+                      <div className="w-4 flex justify-start items-center gap-3">
+                        <div
+                          className="w-4 h-4 relative overflow-hidden cursor-pointer"
+                          onClick={() => setErrorCards(prev => prev.filter(c => c.id !== card.id))}
+                        >
+                          <MisuseOutline style={{color:'#E97075'}}/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            )}
             <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide" style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
@@ -162,6 +202,8 @@ const NextBestActions = () => {
                       action={action}
                       updateAction={updateAction}
                       sendManualCompletion={sendManualCompletion}
+                      errorCards={errorCards}
+                      setErrorCards={setErrorCards}
                     />
                   )}
                   
