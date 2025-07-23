@@ -1,8 +1,9 @@
 import * as styles from "./CallSummary.module.scss";
 import * as widgetStyles from "@client/widget.module.scss";
 import {useTranslation} from "react-i18next";
-import {useEffect, useState, useRef} from "react";
+import {useEffect, useState} from "react";
 import {SocketPayload, useSocketEvent} from "@client/providers/Socket";
+import { useSummary } from "@client/context/SummaryContext";
 import { InlineLoading, InlineNotification } from "@carbon/react";
 import { useAccordion } from "@client/context/AccordionContext";
 import { Copy, MisuseOutline, Warning } from "@carbon/icons-react";
@@ -21,11 +22,9 @@ const CallSummary = () => {
   const {lastMessage} = useSocketEvent('celeryMessage');
   const { expandedSection, setExpandedSection } = useAccordion();
   const conversationid = new URLSearchParams(window.location.search).get('conversationid') || 'undefined';
-  const [loading, setLoading] = useState(false);
-  const [timeoutError, setTimeoutError] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [copied, setCopied] = useState(false);
-  const [errorCards, setErrorCards] = useState<{id: string, message: string}[]>([]);
+  const { loading, setLoading, errorCards, setErrorCards, timeoutRef, timeoutError, setTimeoutError } = useSummary();
+  const {socket} = useSocket();
 
   const handleCopy = () => {
     // 复制summary section中除按钮外的所有内容
@@ -45,30 +44,25 @@ const CallSummary = () => {
   };
 
   
-  const {socket} = useSocket();
   const requestSummary = (conversationId: any) => {
     setLoading(true);
-    // setTimeoutError(false);
-    // setErrorCards(prev => [
-    //   ...prev,
-    //   { id: uuid(), message: "Summary request timeout. Please try again or contact support." }
-    // ]);
     
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       setLoading(false);
-      // setTimeoutError(true);
       setErrorCards(prev => [
         ...prev,
         { id: uuid(), message: "Summary request timeout. Please try again or contact support." }
       ]);
     }, 300000); // 5分钟
+    
     const payload = {
       destination: `agent-assist/${conversationId}/ui`,
       text: "callSummary",
     }
-    socket.emit("callSummary", JSON.stringify(payload))
-    console.log("callSummary socket emit sucessfully")
+    socket.emit("callSummary", JSON.stringify(payload));
+    // socket.emit("webUiMessage", JSON.stringify(payload));
+    console.log("callSummary socket emit successfully")
   }
 
   useEffect(() => {
@@ -246,7 +240,7 @@ const CallSummary = () => {
                 {loading ? t("loadingSummary") : "Generate Summary"}
               </button>
             </div>
-            {timeoutError && (
+            {/* {timeoutError && (
               <div className="w-full flex justify-center p-2">
                 <InlineNotification
                   kind="error"
@@ -255,7 +249,7 @@ const CallSummary = () => {
                   onCloseButtonClick={() => setTimeoutError(false)}
                 />
               </div>
-            )}
+            )} */}
             <div className="self-stretch p-5 inline-flex flex-col justify-start items-start gap-2.5">
               <div className="self-stretch flex flex-col justify-start items-start gap-0.5">
               <div className="py-px inline-flex justify-center items-center gap-2.5">

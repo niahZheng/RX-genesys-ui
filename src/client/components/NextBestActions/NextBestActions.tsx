@@ -3,12 +3,14 @@ import * as widgetStyles from "@client/widget.module.scss";
 import {useTranslation} from "react-i18next";
 import {useEffect, useState, useRef} from "react";
 import {SocketPayload, useSocketEvent, useSocket} from "@client/providers/Socket";
+import { useSummary } from "@client/context/SummaryContext";
 import BestAction from "./BestAction";
 import * as _ from "lodash";
 import {Accordion, AccordionItem, InlineLoading} from "@carbon/react";
 import { useAccordion } from "@client/context/AccordionContext";
 import { array } from "fp-ts";
 import { Warning, MisuseOutline } from "@carbon/react/icons";
+import { v4 as uuid } from "uuid";
 
 export enum ActionState {
   active = "active",
@@ -37,7 +39,7 @@ const NextBestActions = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { expandedSection, setExpandedSection } = useAccordion();
   const conversationid = new URLSearchParams(window.location.search).get('conversationid') || 'undefined';
-  const [errorCards, setErrorCards] = useState<{id: string, message: string}[]>([]);
+  const { loading, setLoading, errorCards, setErrorCards, timeoutRef, timeoutError, setTimeoutError } = useSummary();
   useEffect(() => {
     if (lastMessage) {
       const payload: SocketPayload = JSON.parse(lastMessage?.payloadString);
@@ -64,14 +66,17 @@ const NextBestActions = () => {
         // trying to grab the session ID when receiving the session open message
         // we need this along with the agent id when sending an manual action on click message back to socketio
         setSessionId(payload.parameters.session_id)
-      } else if (payload?.type === "completed_action") {
+            } else if (payload?.type === "completed_action") {
         action.state = ActionState.complete;
         updateAction(action);
-        // const payload = {
-        //   destination: `agent-assist/${session_id}/ui`,
-        //   text: "Next step"
-        // }
-        // socket.emit("webUiMessage", JSON.stringify(payload))
+      } else if (payload?.type === "summary") {
+        setLoading(false);
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+      } else if (payload?.type === "summary") {
+        setLoading(false);
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
       }
     }
   }, [lastMessage])
@@ -88,16 +93,28 @@ const NextBestActions = () => {
       return prevState;
     });
   };
-
+  
   const requestSummary = (conversationId: any) => {
+    setExpandedSection('callSummary');
+    setLoading(true);
+    
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      setLoading(false);
+      setErrorCards(prev => [
+        ...prev,
+        { id: uuid(), message: "Summary request timeout. Please try again or contact support." }
+      ]);
+    }, 300000); // 5分钟超时
+
     const payload = {
       destination: `agent-assist/${conversationId}/ui`,
       text: "callSummary",
     }
-    console.log("requestSummary  test",payload)
-    // socket.emit("webUiMessage", JSON.stringify(payload))
+    console.log("requestSummary test", payload)
     socket.emit("callSummary", JSON.stringify(payload));
-    console.log("callSummary socket emit sucessfully")
+    // socket.emit("webUiMessage", JSON.stringify(payload));
+    console.log("callSummary socket emit successfully")
   }
   // this emits a message back to api-server, which then creates a celery task
   const sendManualCompletion = () => {
@@ -216,13 +233,10 @@ const NextBestActions = () => {
             <div className="flex justify-center items-center w-full py-4 border-t border-gray-100 bg-white">
               <button 
                 className="w-[214px] px-6 py-2 rounded-3xl justify-center items-center gap-4 border bg-white text-xs hover:bg-gray-50 transition-colors"
-                onClick={() => {setExpandedSection('callSummary');
-                //   setTimeout(() => {
-                //   requestSummary(conversationid);
-                // }, 100);
-              }}
+                onClick={() => requestSummary(conversationid)}
+                disabled={loading}
               >
-                Generate Summary
+                {loading ? t("loadingSummary") : "Generate Summary"}
               </button>
             </div>
           </>
