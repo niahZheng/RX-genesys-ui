@@ -5,7 +5,7 @@ const conversationid: any = queryParams.get('conversationid');
 
 
 const chatConnectorServer = axios.create({
-  baseURL: 'https://chat-connector-dgabgde4fwdcd3cu.canadacentral-01.azurewebsites.net/',
+  baseURL: 'https://rx-chat-connector-c0h4h6gchceaf5cp.canadacentral-01.azurewebsites.net/',
   // baseURL: 'http://localhost:3333/',
   headers: { 'Content-Type': 'application/json' }
 });
